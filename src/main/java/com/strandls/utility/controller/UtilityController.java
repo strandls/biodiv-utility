@@ -44,8 +44,7 @@ public class UtilityController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ApiOperation(value = "Find Flag by Flag ID", notes = "Returns Flag details", response = Flag.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Flag.class),
-			@ApiResponse(code = 404, message = "Flag not found", response = String.class) })
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "Flag not found", response = String.class) })
 	public Response getFlags(@PathParam("flagId") String flagId) {
 
 		try {
@@ -65,8 +64,7 @@ public class UtilityController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ApiOperation(value = "Find Flag by Flag ID for IBP", notes = "Returns Flag details for IBP", response = FlagIbp.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = FlagIbp.class),
-			@ApiResponse(code = 404, message = "Flag not found", response = String.class) })
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "Flag not found", response = String.class) })
 
 	public Response getFlagsIbp(@PathParam("flagId") String flagId) {
 		try {
@@ -85,8 +83,7 @@ public class UtilityController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ApiOperation(value = "Find flag by Observation Id", notes = "Return of Flags", response = Flag.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Flag.class),
-			@ApiResponse(code = 400, message = "Flag not found", response = String.class) })
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Flag not found", response = String.class) })
 
 	public Response getFlagByObservation(@PathParam("objectType") String objectType,
 			@PathParam("objectId") String objectId) {
@@ -107,10 +104,8 @@ public class UtilityController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find flag by userId", notes = "Returns List of Flag for a User", response = Flag.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = Flag.class, responseContainer = "List"),
-			@ApiResponse(code = 400, message = "Flag not Found", response = String.class) })
+	@ApiOperation(value = "Find flag by userId", notes = "Returns List of Flag for a User", response = Flag.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Flag not Found", response = String.class) })
 
 	public Response getFlagByUserId(@PathParam("userId") String userId) {
 		try {
@@ -129,8 +124,7 @@ public class UtilityController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ApiOperation(value = "Find follow by followid", notes = "Return follows", response = Follow.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Follow.class),
-			@ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
 
 	public Response getByFollowID(@PathParam("followId") String followId) {
 
@@ -149,8 +143,7 @@ public class UtilityController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ApiOperation(value = "Find follow by objectId", notes = "Return follows", response = Follow.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Follow.class),
-			@ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
 
 	public Response getByObject(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
 			@PathParam("authorId") String authorId) {
@@ -169,10 +162,8 @@ public class UtilityController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find follow by userID", notes = "Return list follows", response = Follow.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = Follow.class, responseContainer = "List"),
-			@ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
+	@ApiOperation(value = "Find follow by userID", notes = "Return list follows", response = Follow.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
 
 	public Response getFollowbyUser(@PathParam("userId") String userId) {
 
