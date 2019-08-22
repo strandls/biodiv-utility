@@ -25,8 +25,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
 
 /**
  * @author Abhishek Rudra
@@ -34,8 +32,6 @@ import io.swagger.annotations.Tag;
  */
 
 @Api("Utility Service")
-@SwaggerDefinition(tags = { @Tag(name = "Utility Serivce", description = "Rest endpoint for Utility Service") })
-
 @Path(ApiConstants.V1 + ApiConstants.SERVICES)
 public class UtilityController {
 
