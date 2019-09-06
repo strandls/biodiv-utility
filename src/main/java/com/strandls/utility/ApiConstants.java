@@ -20,5 +20,7 @@ public class ApiConstants {
 	public static final String OBJECTFOLLOW = "/objectfollow";
 	public static final String USERFOLLOW = "/userfollow";
 	public static final String IBP = "/ibp";
+	public static final String TAGS = "/tags";
+	public static final String FEATURED = "/featured";
 
 }

@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.google.inject.Inject;
 import com.strandls.utility.ApiConstants;
+import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -145,7 +146,7 @@ public class UtilityController {
 	@ApiOperation(value = "Find follow by objectId", notes = "Return follows", response = Follow.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
 
-	public Response getByObject(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
+	public Response getFollowByObject(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
 			@PathParam("authorId") String authorId) {
 		try {
 			Long objId = Long.parseLong(objectId);
@@ -175,6 +176,44 @@ public class UtilityController {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 
+	}
+
+	@GET
+	@Path(ApiConstants.TAGS + "/{objectType}/{objectId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Find tags", notes = "Return list tags", response = String.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Tags not Found", response = String.class) })
+
+	public Response getTags(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId) {
+		try {
+			Long id = Long.parseLong(objectId);
+			List<String> tags = utilityService.fetchTags(objectType, id);
+			return Response.status(Status.OK).entity(tags).build();
+
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
+
+	@GET
+	@Path(ApiConstants.FEATURED + "/{objectType}/{objectId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Find Featured", notes = "Return list Featured", response = Featured.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Featured not Found", response = String.class) })
+	
+	public Response getAllFeatured(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId) {
+
+		try {
+			Long id = Long.parseLong(objectId);
+			List<Featured> featuredList = utilityService.fetchFeatured(objectType, id);
+			return Response.status(Status.OK).entity(featuredList).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 }

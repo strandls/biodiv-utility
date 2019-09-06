@@ -18,5 +18,8 @@
 		
 		<mapping class="com.strandls.utility.pojo.Flag"/>
 		<mapping class="com.strandls.utility.pojo.Follow"/>
+		<mapping class="com.strandls.utility.pojo.Tags"/>
+		<mapping class="com.strandls.utility.pojo.TagLinks"/>
+		<mapping class="com.strandls.utility.pojo.Featured"/>
 	</session-factory>
 </hibernate-configuration>
