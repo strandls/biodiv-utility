@@ -9,6 +9,7 @@ import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
+import com.strandls.utility.pojo.TagsMapping;
 
 /**
  * @author Abhishek Rudra
@@ -33,4 +34,6 @@ public interface UtilityService {
 	public List<String> fetchTags(String objectType, Long id);
 
 	public List<Featured> fetchFeatured(String objectType, Long id);
+
+	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping);
 }

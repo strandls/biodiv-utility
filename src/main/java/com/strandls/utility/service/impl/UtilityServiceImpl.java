@@ -6,6 +6,9 @@ package com.strandls.utility.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
 import com.strandls.utility.dao.FeaturedDao;
 import com.strandls.utility.dao.FlagDao;
@@ -17,6 +20,8 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
 import com.strandls.utility.pojo.TagLinks;
+import com.strandls.utility.pojo.Tags;
+import com.strandls.utility.pojo.TagsMapping;
 import com.strandls.utility.service.UtilityService;
 
 /**
@@ -24,6 +29,8 @@ import com.strandls.utility.service.UtilityService;
  *
  */
 public class UtilityServiceImpl implements UtilityService {
+
+	private static final Logger logger = LoggerFactory.getLogger(UtilityServiceImpl.class);
 
 	@Inject
 	private FlagDao flagDao;
@@ -36,7 +43,7 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private TagsDao tagsDao;
-	
+
 	@Inject
 	private FeaturedDao featuredDao;
 
@@ -97,6 +104,47 @@ public class UtilityServiceImpl implements UtilityService {
 	public List<Featured> fetchFeatured(String objectType, Long id) {
 		List<Featured> featuredList = featuredDao.fetchAllFeatured(objectType, id);
 		return featuredList;
+	}
+
+	@Override
+	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping) {
+
+		try {
+			Long objectId = tagsMapping.getObjectId();
+			List<String> resultList = new ArrayList<String>();
+			List<String> errorList = new ArrayList<String>();
+			for (Tags tag : tagsMapping.getTags()) {
+				if (tag.getVersion() == null)
+					tag.setVersion(0L);
+				TagLinks result = null;
+				if (tag.getId() == null) {
+					Tags insertedTag = tagsDao.save(tag);
+					if (insertedTag.getId() != null) {
+						TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
+						result = tagLinkDao.save(tagLink);
+					}
+				} else {
+					Tags storedTag = tagsDao.findById(tag.getId());
+					if (!(storedTag.getName().equals(tag.getName()))) {
+						errorList.add("Mapping not proper for TagName and id Supplied for ID" + tag.getName() + " and "
+								+ tag.getId());
+					} else {
+						TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
+						result = tagLinkDao.save(tagLink);
+					}
+
+				}
+				if (result.getId() != null)
+					resultList.add(result.getId().toString());
+			}
+			if (!(errorList.isEmpty()))
+				return errorList;
+			return resultList;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
+
 	}
 
 }

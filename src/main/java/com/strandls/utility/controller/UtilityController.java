@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,10 +21,12 @@ import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
+import com.strandls.utility.pojo.TagsMapping;
 import com.strandls.utility.service.UtilityService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -146,8 +149,8 @@ public class UtilityController {
 	@ApiOperation(value = "Find follow by objectId", notes = "Return follows", response = Follow.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
 
-	public Response getFollowByObject(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
-			@PathParam("authorId") String authorId) {
+	public Response getFollowByObject(@PathParam("objectType") String objectType,
+			@PathParam("objectId") String objectId, @PathParam("authorId") String authorId) {
 		try {
 			Long objId = Long.parseLong(objectId);
 			Long authId = Long.parseLong(authorId);
@@ -197,6 +200,32 @@ public class UtilityController {
 		}
 	}
 
+	@POST
+	@Path(ApiConstants.TAGS + "/{objectType}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Create Tags", notes = "Return the id of Tags Links created", response = String.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 409, message = "Error occured in transaction", response = String.class),
+			@ApiResponse(code = 400, message = "DB not Found", response = String.class) })
+
+	public Response createTags(@PathParam("objectType") String objectType,
+			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
+		try {
+			List<String> result = utilityService.createTagsMapping(objectType, tagsMapping);
+			if (result == null)
+				return Response.status(Status.CONFLICT).entity("Error occured in transaction").build();
+			else {
+				if (result.get(0).startsWith("Mapping not proper for TagName and id Supplied for ID"))
+					return Response.status(206).entity(result).build(); // PARTIAL CONTENT 206
+				return Response.status(Status.CREATED).entity(result).build();
+
+			}
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
 	@GET
 	@Path(ApiConstants.FEATURED + "/{objectType}/{objectId}")
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -204,7 +233,7 @@ public class UtilityController {
 
 	@ApiOperation(value = "Find Featured", notes = "Return list Featured", response = Featured.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Featured not Found", response = String.class) })
-	
+
 	public Response getAllFeatured(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId) {
 
 		try {
