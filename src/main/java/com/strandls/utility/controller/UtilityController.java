@@ -207,7 +207,8 @@ public class UtilityController {
 
 	@ApiOperation(value = "Create Tags", notes = "Return the id of Tags Links created", response = String.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 409, message = "Error occured in transaction", response = String.class),
-			@ApiResponse(code = 400, message = "DB not Found", response = String.class) })
+			@ApiResponse(code = 400, message = "DB not Found", response = String.class),
+			@ApiResponse(code = 206, message = "partial succes ", response = String.class) })
 
 	public Response createTags(@PathParam("objectType") String objectType,
 			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
