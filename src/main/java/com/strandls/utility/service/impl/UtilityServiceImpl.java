@@ -3,12 +3,24 @@
  */
 package com.strandls.utility.service.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.strandls.utility.dao.FeaturedDao;
 import com.strandls.utility.dao.FlagDao;
@@ -19,6 +31,7 @@ import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
+import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagLinks;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
@@ -31,6 +44,8 @@ import com.strandls.utility.service.UtilityService;
 public class UtilityServiceImpl implements UtilityService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilityServiceImpl.class);
+
+	private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
 	@Inject
 	private FlagDao flagDao;
@@ -46,6 +61,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private FeaturedDao featuredDao;
+
+	@Inject
+	private ObjectMapper objectMapper;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -145,6 +163,43 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 		return null;
 
+	}
+
+	@Override
+	public ParsedName findParsedName(String scientificName) {
+
+		URIBuilder builder = new URIBuilder();
+		builder.setScheme("http").setHost("localhost:9091").setPath("/api").setParameter("q", scientificName);
+
+		List<ParsedName> parsedName = null;
+
+		URI uri = null;
+		try {
+			uri = builder.build();
+			HttpGet request = new HttpGet(uri);
+
+			try (CloseableHttpResponse response = httpClient.execute(request)) {
+				System.out.println(response.getStatusLine().toString());
+
+				HttpEntity entity = response.getEntity();
+				Header headers = entity.getContentType();
+				System.out.println(headers);
+
+				if (entity != null) {
+					// return it as a String
+					String result = EntityUtils.toString(entity);
+					parsedName = Arrays.asList(objectMapper.readValue(result, ParsedName[].class));
+				}
+
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+
+		} catch (URISyntaxException e1) {
+			logger.error(e1.getMessage());
+		}
+
+		return parsedName.get(0);
 	}
 
 }

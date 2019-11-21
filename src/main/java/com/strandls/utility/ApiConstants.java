@@ -22,5 +22,6 @@ public class ApiConstants {
 	public static final String IBP = "/ibp";
 	public static final String TAGS = "/tags";
 	public static final String FEATURED = "/featured";
+	public static final String NAMEPARSER = "/nameparser";
 
 }

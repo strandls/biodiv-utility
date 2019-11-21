@@ -21,6 +21,7 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -58,16 +59,19 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 
 				configuration = configuration.configure();
 				SessionFactory sessionFactory = configuration.buildSessionFactory();
-				
+
 				Map<String, String> props = new HashMap<String, String>();
 				props.put("javax.ws.rs.Application", ApplicationConfig.class.getName());
 				props.put("jersey.config.server.wadl.disableWadl", "true");
 
+				ObjectMapper objectMapper = new ObjectMapper();
+				bind(ObjectMapper.class).toInstance(objectMapper);
+
 				bind(SessionFactory.class).toInstance(sessionFactory);
 
-				serve("/api/*").with(GuiceContainer.class,props);
+				serve("/api/*").with(GuiceContainer.class, props);
 			}
-		}, new UtilityControllerModule(), new UtilityServiceModule(),new UtilityDaoModule());
+		}, new UtilityControllerModule(), new UtilityServiceModule(), new UtilityDaoModule());
 
 		return injector;
 
