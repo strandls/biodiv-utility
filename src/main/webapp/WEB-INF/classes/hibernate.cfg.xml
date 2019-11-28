@@ -6,8 +6,8 @@
 	<session-factory>
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-		<property name="hibernate.connection.username">postgres</property>
-		<property name="hibernate.connection.password">postgres123</property>
+		<property name="hibernate.connection.username">biodiv</property>
+		<property name="hibernate.connection.password">prharasr</property>
 		<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/biodiv</property>
 
 		<property name="connection_pool_size">1</property>
@@ -21,5 +21,6 @@
 		<mapping class="com.strandls.utility.pojo.Tags"/>
 		<mapping class="com.strandls.utility.pojo.TagLinks"/>
 		<mapping class="com.strandls.utility.pojo.Featured"/>
+		<mapping class="com.strandls.utility.pojo.Language"/>
 	</session-factory>
 </hibernate-configuration>

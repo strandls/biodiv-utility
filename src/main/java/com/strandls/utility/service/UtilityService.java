@@ -9,6 +9,7 @@ import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
+import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagsMapping;
 
@@ -39,4 +40,6 @@ public interface UtilityService {
 	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping);
 
 	public ParsedName findParsedName(String scientificName);
+
+	public List<Language> findAllLanguages(Boolean isDirty);
 }

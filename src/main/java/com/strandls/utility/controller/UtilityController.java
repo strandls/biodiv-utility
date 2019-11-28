@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,6 +28,7 @@ import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
+import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagsMapping;
 import com.strandls.utility.service.UtilityService;
@@ -278,6 +280,23 @@ public class UtilityController {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 
+	}
+
+	@GET
+	@Path(ApiConstants.LANGUAGES)
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Find all the Languages based on IsDirty field", notes = "Returns all the Languages Details", response = Language.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Languages Not Found", response = String.class) })
+
+	public Response getAllLanguages(@QueryParam("isDirty") Boolean isDirty) {
+		try {
+			List<Language> result = utilityService.findAllLanguages(isDirty);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 
 }

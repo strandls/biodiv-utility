@@ -25,12 +25,14 @@ import com.google.inject.Inject;
 import com.strandls.utility.dao.FeaturedDao;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.FollowDao;
+import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Featured;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
+import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagLinks;
 import com.strandls.utility.pojo.Tags;
@@ -64,6 +66,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private ObjectMapper objectMapper;
+
+	@Inject
+	private LanguageDao languageDao;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -200,6 +205,16 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 
 		return parsedName.get(0);
+	}
+
+	@Override
+	public List<Language> findAllLanguages(Boolean isDirty) {
+		List<Language> result = null;
+		if (isDirty != null)
+			result = languageDao.findAll(isDirty);
+		else
+			result = languageDao.findAll();
+		return result;
 	}
 
 }
