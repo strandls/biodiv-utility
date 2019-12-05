@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,6 +31,7 @@ import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
+import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
 import com.strandls.utility.service.UtilityService;
 
@@ -239,6 +241,25 @@ public class UtilityController {
 				return Response.status(Status.CREATED).entity(result).build();
 
 			}
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@PUT
+	@Path(ApiConstants.TAGS + "/{objectType}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+	@ApiOperation(value = "Update the tags", notes = "Returns all the current tags", response = Tags.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to edit", response = String.class) })
+
+	public Response updateTags(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
+			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
+		try {
+			List<Tags> result = utilityService.updateTags(objectType, tagsMapping);
+			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}

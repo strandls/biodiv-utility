@@ -11,6 +11,7 @@ import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
+import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
 
 /**
@@ -42,4 +43,6 @@ public interface UtilityService {
 	public ParsedName findParsedName(String scientificName);
 
 	public List<Language> findAllLanguages(Boolean isDirty);
+
+	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping);
 }

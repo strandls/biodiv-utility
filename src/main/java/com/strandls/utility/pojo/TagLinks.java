@@ -35,6 +35,13 @@ public class TagLinks implements Serializable {
 	private String type;
 
 	/**
+	 * 
+	 */
+	public TagLinks() {
+		super();
+	}
+
+	/**
 	 * @param id
 	 * @param version
 	 * @param tagId

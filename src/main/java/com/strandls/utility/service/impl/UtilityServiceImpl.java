@@ -217,4 +217,48 @@ public class UtilityServiceImpl implements UtilityService {
 		return result;
 	}
 
+	@Override
+	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping) {
+		List<Tags> tags = new ArrayList<Tags>();
+
+		try {
+			Long objectId = tagsMapping.getObjectId();
+			List<TagLinks> previousTags = tagLinkDao.findObjectTags(objectType, objectId);
+			List<Tags> newTags = tagsMapping.getTags();
+//			DELETE THE TAGS THAT ARE REMOVED
+			for (TagLinks tagLinks : previousTags) {
+				Tags tag = tagsDao.findById(tagLinks.getTagId());
+				if (!(newTags.contains(tag))) {
+					tagLinkDao.delete(tagLinks);
+				}
+			}
+//			ADD OR CREATE THE NEW TAGS ADDED
+			for (Tags tag : newTags) {
+
+				if (tag.getId() != null) {
+					TagLinks result = tagLinkDao.checkIfTagsLinked(objectType, objectId, tag.getId());
+					if (result == null) {
+						TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
+						tagLinkDao.save(tagLink);
+					}
+				} else {
+					tag.setVersion(0L);
+					tag = tagsDao.save(tag);
+					TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
+					tagLinkDao.save(tagLink);
+				}
+
+			}
+
+			List<TagLinks> presentTags = tagLinkDao.findObjectTags(objectType, objectId);
+			for (TagLinks tagLinks : presentTags) {
+				tags.add(tagsDao.findById(tagLinks.getTagId()));
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return tags;
+	}
+
 }
