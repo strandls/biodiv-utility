@@ -48,4 +48,6 @@ public interface UtilityService {
 	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping);
 
 	public List<Featured> createFeatured(Long userId, FeaturedCreate featuredCreate);
+
+	public List<Featured> removeFeatured(Long userId, String objectType, Long objectId, List<Long> userGroupList);
 }

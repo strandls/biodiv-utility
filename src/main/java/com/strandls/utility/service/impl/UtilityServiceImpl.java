@@ -277,18 +277,66 @@ public class UtilityServiceImpl implements UtilityService {
 			Featured featured;
 			if (featuredCreate.getObjectType().equalsIgnoreCase("observation"))
 				featuredCreate.setObjectType("species.participation.Observation");
+
+			List<Featured> featuredList = featuredDao.fetchAllFeatured(featuredCreate.getObjectType(),
+					featuredCreate.getObjectId());
+
 			for (Long userGroupId : featuredCreate.getUserGroup()) {
 				if (userGroupIds.contains(userGroupId)) {
-					featured = new Featured(null, 0L, userId, new Date(), featuredCreate.getNotes(),
-							featuredCreate.getObjectId(), featuredCreate.getObjectType(), userGroupId, 205L, null);
-					featured = featuredDao.save(featured);
-					result.add(featured);
+
+					int flag = 0;
+					for (Featured alreadyFeatured : featuredList) {
+						if (alreadyFeatured.getUserGroup() == userGroupId) {
+							alreadyFeatured.setCreatedOn(new Date());
+							alreadyFeatured.setNotes(featuredCreate.getNotes());
+							alreadyFeatured.setAuthorId(userId);
+							featuredDao.update(alreadyFeatured);
+							flag = 1;
+						}
+					}
+
+					if (flag == 0) {
+						featured = new Featured(null, 0L, userId, new Date(), featuredCreate.getNotes(),
+								featuredCreate.getObjectId(), featuredCreate.getObjectType(), userGroupId, 205L, null);
+						featured = featuredDao.save(featured);
+
+					}
+
 				}
 			}
+			result = featuredDao.fetchAllFeatured(featuredCreate.getObjectType(), featuredCreate.getObjectId());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 		return result;
+	}
+
+	@Override
+	public List<Featured> removeFeatured(Long userId, String objectType, Long objectId, List<Long> userGroupList) {
+
+		List<Featured> resultList = null;
+		try {
+			if (objectType.equalsIgnoreCase("observation"))
+				objectType = "species.participation.Observation";
+			List<Featured> featuredList = featuredDao.fetchAllFeatured(objectType, objectId);
+			List<Long> userGroupIds = userGroupService.checkUserRolePermission();
+
+			for (Long userGroupId : userGroupList) {
+				if (userGroupIds.contains(userGroupId)) {
+					for (Featured featured : featuredList) {
+						if (featured.getUserGroup() == userGroupId) {
+							featuredDao.delete(featured);
+							break;
+						}
+					}
+				}
+			}
+
+			resultList = featuredDao.fetchAllFeatured(objectType, objectId);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return resultList;
 	}
 
 }
