@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.strandls.userGroup.controller.UserGroupSerivceApi;
 import com.strandls.utility.dao.FeaturedDao;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.FollowDao;
@@ -29,6 +31,7 @@ import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Featured;
+import com.strandls.utility.pojo.FeaturedCreate;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -69,6 +72,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private LanguageDao languageDao;
+
+	@Inject
+	private UserGroupSerivceApi userGroupService;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -259,6 +265,30 @@ public class UtilityServiceImpl implements UtilityService {
 			logger.error(e.getMessage());
 		}
 		return tags;
+	}
+
+	@Override
+	public List<Featured> createFeatured(Long userId, FeaturedCreate featuredCreate) {
+
+		List<Featured> result = new ArrayList<Featured>();
+		try {
+			List<Long> userGroupIds = userGroupService.checkUserRolePermission();
+
+			Featured featured;
+			if (featuredCreate.getObjectType().equalsIgnoreCase("observation"))
+				featuredCreate.setObjectType("species.participation.Observation");
+			for (Long userGroupId : featuredCreate.getUserGroup()) {
+				if (userGroupIds.contains(userGroupId)) {
+					featured = new Featured(null, 0L, userId, new Date(), featuredCreate.getNotes(),
+							featuredCreate.getObjectId(), featuredCreate.getObjectType(), userGroupId, 205L, null);
+					featured = featuredDao.save(featured);
+					result.add(featured);
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return result;
 	}
 
 }

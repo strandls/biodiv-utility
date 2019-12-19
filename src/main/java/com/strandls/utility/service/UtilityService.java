@@ -6,6 +6,7 @@ package com.strandls.utility.service;
 import java.util.List;
 
 import com.strandls.utility.pojo.Featured;
+import com.strandls.utility.pojo.FeaturedCreate;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -45,4 +46,6 @@ public interface UtilityService {
 	public List<Language> findAllLanguages(Boolean isDirty);
 
 	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping);
+
+	public List<Featured> createFeatured(Long userId, FeaturedCreate featuredCreate);
 }

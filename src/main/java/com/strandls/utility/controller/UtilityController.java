@@ -26,6 +26,7 @@ import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.authentication_utility.util.AuthUtil;
 import com.strandls.utility.ApiConstants;
 import com.strandls.utility.pojo.Featured;
+import com.strandls.utility.pojo.FeaturedCreate;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -282,6 +283,28 @@ public class UtilityController {
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
+	}
+
+	@POST
+	@Path(ApiConstants.FEATURED)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ValidateUser
+
+	@ApiOperation(value = "Posting of Featured to a Group", notes = "Returns the Details of Featured", response = Featured.class, responseContainer = "List")
+	@ApiResponses(value = {
+			@ApiResponse(code = 404, message = "Unable to Feature in a Group", response = String.class) })
+	public Response createFeatured(@Context HttpServletRequest request,
+			@ApiParam(name = "featuredCreate") FeaturedCreate featuredCreate) {
+
+		try {
+			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
+			Long userId = Long.parseLong(profile.getId());
+			List<Featured> result = utilityService.createFeatured(userId, featuredCreate);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+
 	}
 
 	@GET
