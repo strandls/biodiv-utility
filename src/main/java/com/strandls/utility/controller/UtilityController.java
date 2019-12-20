@@ -207,13 +207,13 @@ public class UtilityController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find tags", notes = "Return list tags", response = String.class, responseContainer = "List")
+	@ApiOperation(value = "Find tags", notes = "Return list tags", response = Tags.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Tags not Found", response = String.class) })
 
 	public Response getTags(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId) {
 		try {
 			Long id = Long.parseLong(objectId);
-			List<String> tags = utilityService.fetchTags(objectType, id);
+			List<Tags> tags = utilityService.fetchTags(objectType, id);
 			return Response.status(Status.OK).entity(tags).build();
 
 		} catch (Exception e) {

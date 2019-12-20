@@ -120,11 +120,11 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<String> fetchTags(String objectType, Long id) {
+	public List<Tags> fetchTags(String objectType, Long id) {
 		List<TagLinks> tagList = tagLinkDao.findObjectTags(objectType, id);
-		List<String> tags = new ArrayList<String>();
+		List<Tags> tags = new ArrayList<Tags>();
 		for (TagLinks tag : tagList) {
-			tags.add(tagsDao.findById(tag.getTagId()).getName());
+			tags.add(tagsDao.findById(tag.getTagId()));
 		}
 		return tags;
 	}

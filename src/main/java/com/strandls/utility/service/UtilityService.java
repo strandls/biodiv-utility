@@ -35,7 +35,7 @@ public interface UtilityService {
 
 	public List<Follow> fetchFollowByUser(Long authorId);
 
-	public List<String> fetchTags(String objectType, Long id);
+	public List<Tags> fetchTags(String objectType, Long id);
 
 	public List<Featured> fetchFeatured(String objectType, Long id);
 
