@@ -3,6 +3,8 @@
  */
 package com.strandls.utility.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -318,13 +320,18 @@ public class UtilityController {
 	@ApiOperation(value = "UnFeatures a Object from a UserGroup", notes = "Returns the Current Featured", response = Featured.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "Unable to Unfeature", response = String.class) })
 	public Response unFeatured(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId, @ApiParam(name = "userGroupList") List<Long> userGroupList) {
+			@PathParam("objectId") String objectId, @QueryParam("userGroupList") String userGroupList) {
 		try {
 
 			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
 			Long userId = Long.parseLong(profile.getId());
 			Long objId = Long.parseLong(objectId);
-			List<Featured> result = utilityService.removeFeatured(userId, objectType, objId, userGroupList);
+			List<Long> userGroup = new ArrayList<Long>();
+			for (String group: userGroupList.split(",")) {
+				userGroup.add(Long.parseLong(group.trim()));
+			}
+
+			List<Featured> result = utilityService.removeFeatured(userId, objectType, objId, userGroup);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
