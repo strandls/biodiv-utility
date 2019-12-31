@@ -4,7 +4,6 @@
 package com.strandls.utility.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -228,6 +227,8 @@ public class UtilityController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 
+	@ValidateUser
+
 	@ApiOperation(value = "Create Tags", notes = "Return the id of Tags Links created", response = String.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 409, message = "Error occured in transaction", response = String.class),
 			@ApiResponse(code = 400, message = "DB not Found", response = String.class),
@@ -327,7 +328,7 @@ public class UtilityController {
 			Long userId = Long.parseLong(profile.getId());
 			Long objId = Long.parseLong(objectId);
 			List<Long> userGroup = new ArrayList<Long>();
-			for (String group: userGroupList.split(",")) {
+			for (String group : userGroupList.split(",")) {
 				userGroup.add(Long.parseLong(group.trim()));
 			}
 
