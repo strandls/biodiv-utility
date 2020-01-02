@@ -20,7 +20,6 @@
 		<mapping class="com.strandls.utility.pojo.Follow"/>
 		<mapping class="com.strandls.utility.pojo.Tags"/>
 		<mapping class="com.strandls.utility.pojo.TagLinks"/>
-		<mapping class="com.strandls.utility.pojo.Featured"/>
 		<mapping class="com.strandls.utility.pojo.Language"/>
 	</session-factory>
 </hibernate-configuration>
