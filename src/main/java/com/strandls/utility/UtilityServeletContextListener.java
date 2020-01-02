@@ -24,10 +24,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Scopes;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.strandls.authentication_utility.filter.FilterModule;
-import com.strandls.userGroup.controller.UserGroupSerivceApi;
 import com.strandls.utility.controller.UtilityControllerModule;
 import com.strandls.utility.dao.UtilityDaoModule;
 import com.strandls.utility.service.impl.UtilityServiceModule;
@@ -71,11 +69,8 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 				bind(ObjectMapper.class).toInstance(objectMapper);
 
 				bind(SessionFactory.class).toInstance(sessionFactory);
-				bind(UserGroupSerivceApi.class).in(Scopes.SINGLETON);
-
 				serve("/api/*").with(GuiceContainer.class, props);
 
-				filter("/*").through(SwaggerFilter.class);
 			}
 		}, new UtilityControllerModule(), new FilterModule(), new UtilityServiceModule(), new UtilityDaoModule());
 

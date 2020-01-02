@@ -7,7 +7,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -23,15 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
-import com.strandls.userGroup.controller.UserGroupSerivceApi;
-import com.strandls.utility.dao.FeaturedDao;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.FollowDao;
 import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
-import com.strandls.utility.pojo.Featured;
-import com.strandls.utility.pojo.FeaturedCreate;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -65,16 +60,10 @@ public class UtilityServiceImpl implements UtilityService {
 	private TagsDao tagsDao;
 
 	@Inject
-	private FeaturedDao featuredDao;
-
-	@Inject
 	private ObjectMapper objectMapper;
 
 	@Inject
 	private LanguageDao languageDao;
-
-	@Inject
-	private UserGroupSerivceApi userGroupService;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -127,12 +116,6 @@ public class UtilityServiceImpl implements UtilityService {
 			tags.add(tagsDao.findById(tag.getTagId()));
 		}
 		return tags;
-	}
-
-	@Override
-	public List<Featured> fetchFeatured(String objectType, Long id) {
-		List<Featured> featuredList = featuredDao.fetchAllFeatured(objectType, id);
-		return featuredList;
 	}
 
 	@Override
@@ -265,78 +248,6 @@ public class UtilityServiceImpl implements UtilityService {
 			logger.error(e.getMessage());
 		}
 		return tags;
-	}
-
-	@Override
-	public List<Featured> createFeatured(Long userId, FeaturedCreate featuredCreate) {
-
-		List<Featured> result = new ArrayList<Featured>();
-		try {
-			List<Long> userGroupIds = userGroupService.checkUserRolePermission();
-
-			Featured featured;
-			if (featuredCreate.getObjectType().equalsIgnoreCase("observation"))
-				featuredCreate.setObjectType("species.participation.Observation");
-
-			List<Featured> featuredList = featuredDao.fetchAllFeatured(featuredCreate.getObjectType(),
-					featuredCreate.getObjectId());
-
-			for (Long userGroupId : featuredCreate.getUserGroup()) {
-				if (userGroupIds.contains(userGroupId)) {
-
-					int flag = 0;
-					for (Featured alreadyFeatured : featuredList) {
-						if (alreadyFeatured.getUserGroup() == userGroupId) {
-							alreadyFeatured.setCreatedOn(new Date());
-							alreadyFeatured.setNotes(featuredCreate.getNotes());
-							alreadyFeatured.setAuthorId(userId);
-							featuredDao.update(alreadyFeatured);
-							flag = 1;
-						}
-					}
-
-					if (flag == 0) {
-						featured = new Featured(null, 0L, userId, new Date(), featuredCreate.getNotes(),
-								featuredCreate.getObjectId(), featuredCreate.getObjectType(), userGroupId, 205L, null);
-						featured = featuredDao.save(featured);
-
-					}
-
-				}
-			}
-			result = featuredDao.fetchAllFeatured(featuredCreate.getObjectType(), featuredCreate.getObjectId());
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return result;
-	}
-
-	@Override
-	public List<Featured> removeFeatured(Long userId, String objectType, Long objectId, List<Long> userGroupList) {
-
-		List<Featured> resultList = null;
-		try {
-			if (objectType.equalsIgnoreCase("observation"))
-				objectType = "species.participation.Observation";
-			List<Featured> featuredList = featuredDao.fetchAllFeatured(objectType, objectId);
-			List<Long> userGroupIds = userGroupService.checkUserRolePermission();
-
-			for (Long userGroupId : userGroupList) {
-				if (userGroupIds.contains(userGroupId)) {
-					for (Featured featured : featuredList) {
-						if (featured.getUserGroup() == userGroupId) {
-							featuredDao.delete(featured);
-							break;
-						}
-					}
-				}
-			}
-
-			resultList = featuredDao.fetchAllFeatured(objectType, objectId);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return resultList;
 	}
 
 }

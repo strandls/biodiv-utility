@@ -3,12 +3,10 @@
  */
 package com.strandls.utility.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -27,8 +25,6 @@ import com.google.inject.Inject;
 import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.authentication_utility.util.AuthUtil;
 import com.strandls.utility.ApiConstants;
-import com.strandls.utility.pojo.Featured;
-import com.strandls.utility.pojo.FeaturedCreate;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -264,75 +260,6 @@ public class UtilityController {
 			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
 		try {
 			List<Tags> result = utilityService.updateTags(objectType, tagsMapping);
-			return Response.status(Status.OK).entity(result).build();
-		} catch (Exception e) {
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
-	}
-
-	@GET
-	@Path(ApiConstants.FEATURED + "/{objectType}/{objectId}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-
-	@ApiOperation(value = "Find Featured", notes = "Return list Featured", response = Featured.class, responseContainer = "List")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Featured not Found", response = String.class) })
-
-	public Response getAllFeatured(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId) {
-
-		try {
-			Long id = Long.parseLong(objectId);
-			List<Featured> featuredList = utilityService.fetchFeatured(objectType, id);
-			return Response.status(Status.OK).entity(featuredList).build();
-		} catch (Exception e) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-	}
-
-	@POST
-	@Path(ApiConstants.FEATURED)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ValidateUser
-
-	@ApiOperation(value = "Posting of Featured to a Group", notes = "Returns the Details of Featured", response = Featured.class, responseContainer = "List")
-	@ApiResponses(value = {
-			@ApiResponse(code = 404, message = "Unable to Feature in a Group", response = String.class) })
-	public Response createFeatured(@Context HttpServletRequest request,
-			@ApiParam(name = "featuredCreate") FeaturedCreate featuredCreate) {
-
-		try {
-			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
-			Long userId = Long.parseLong(profile.getId());
-			List<Featured> result = utilityService.createFeatured(userId, featuredCreate);
-			return Response.status(Status.OK).entity(result).build();
-		} catch (Exception e) {
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
-
-	}
-
-	@DELETE
-	@Path(ApiConstants.UNFEATURED + "/{objectType}/{objectId}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-
-	@ValidateUser
-	@ApiOperation(value = "UnFeatures a Object from a UserGroup", notes = "Returns the Current Featured", response = Featured.class, responseContainer = "List")
-	@ApiResponses(value = { @ApiResponse(code = 404, message = "Unable to Unfeature", response = String.class) })
-	public Response unFeatured(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId, @QueryParam("userGroupList") String userGroupList) {
-		try {
-
-			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
-			Long userId = Long.parseLong(profile.getId());
-			Long objId = Long.parseLong(objectId);
-			List<Long> userGroup = new ArrayList<Long>();
-			for (String group : userGroupList.split(",")) {
-				userGroup.add(Long.parseLong(group.trim()));
-			}
-
-			List<Featured> result = utilityService.removeFeatured(userId, objectType, objId, userGroup);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();

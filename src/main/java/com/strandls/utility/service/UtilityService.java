@@ -5,8 +5,6 @@ package com.strandls.utility.service;
 
 import java.util.List;
 
-import com.strandls.utility.pojo.Featured;
-import com.strandls.utility.pojo.FeaturedCreate;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.Follow;
@@ -37,8 +35,6 @@ public interface UtilityService {
 
 	public List<Tags> fetchTags(String objectType, Long id);
 
-	public List<Featured> fetchFeatured(String objectType, Long id);
-
 	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping);
 
 	public ParsedName findParsedName(String scientificName);
@@ -47,7 +43,4 @@ public interface UtilityService {
 
 	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping);
 
-	public List<Featured> createFeatured(Long userId, FeaturedCreate featuredCreate);
-
-	public List<Featured> removeFeatured(Long userId, String objectType, Long objectId, List<Long> userGroupList);
 }

@@ -18,7 +18,6 @@ public class UtilityDaoModule extends AbstractModule {
 		bind(FollowDao.class).in(Scopes.SINGLETON);
 		bind(TagsDao.class).in(Scopes.SINGLETON);
 		bind(TagLinksDao.class).in(Scopes.SINGLETON);
-		bind(FeaturedDao.class).in(Scopes.SINGLETON);
 		bind(LanguageDao.class).in(Scopes.SINGLETON);
 	}
 
