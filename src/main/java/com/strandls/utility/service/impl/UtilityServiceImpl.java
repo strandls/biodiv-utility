@@ -250,4 +250,10 @@ public class UtilityServiceImpl implements UtilityService {
 		return tags;
 	}
 
+	@Override
+	public List<Tags> tagsAutoSugguest(String phrase) {
+		List<Tags> result = tagsDao.fetchNameByLike(phrase);
+		return result;
+	}
+
 }

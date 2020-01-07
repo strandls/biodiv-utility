@@ -24,5 +24,6 @@ public class ApiConstants {
 	public static final String NAMEPARSER = "/nameparser";
 	public static final String LANGUAGES = "/languages";
 	public static final String CREATE = "/create";
+	public static final String AUTOCOMPLETE = "/autocomplete";
 
 }

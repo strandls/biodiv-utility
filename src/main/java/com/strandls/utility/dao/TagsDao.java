@@ -3,8 +3,11 @@
  */
 package com.strandls.utility.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +43,28 @@ public class TagsDao extends AbstractDAO<Tags, Long> {
 			session.close();
 		}
 		return entity;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Tags> fetchNameByLike(String phrase) {
+		Session session = sessionFactory.openSession();
+		List<Tags> result = null;
+
+		String qry = "SELECT id, version, strip_tags(name) FROM public.tags " + "where name like '" + phrase
+				+ "%' order by char_length(name) asc limit 10";
+
+		try {
+			Query<Tags> query = session.createNativeQuery(qry);
+			result = query.getResultList();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+
+		return result;
+
 	}
 
 }

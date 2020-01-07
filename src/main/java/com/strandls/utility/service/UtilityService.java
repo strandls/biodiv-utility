@@ -43,4 +43,6 @@ public interface UtilityService {
 
 	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping);
 
+	public List<Tags> tagsAutoSugguest(String phrase);
+
 }
