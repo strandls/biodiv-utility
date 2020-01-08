@@ -3,6 +3,7 @@
  */
 package com.strandls.utility.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -48,14 +49,20 @@ public class TagsDao extends AbstractDAO<Tags, Long> {
 	@SuppressWarnings("unchecked")
 	public List<Tags> fetchNameByLike(String phrase) {
 		Session session = sessionFactory.openSession();
-		List<Tags> result = null;
+		List<Tags> tagsList = new ArrayList<Tags>();
+		List<Object[]> result = null;
 
 		String qry = "SELECT id, version, strip_tags(name) FROM public.tags " + "where name like '" + phrase
 				+ "%' order by char_length(name) asc limit 10";
 
 		try {
-			Query<Tags> query = session.createNativeQuery(qry);
+			Query<Object[]> query = session.createNativeQuery(qry);
 			result = query.getResultList();
+
+			for (Object[] obj : result) {
+				tagsList.add(new Tags(Long.parseLong(obj[0].toString()), Long.parseLong(obj[1].toString()),
+						obj[2].toString()));
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -63,7 +70,7 @@ public class TagsDao extends AbstractDAO<Tags, Long> {
 			session.close();
 		}
 
-		return result;
+		return tagsList;
 
 	}
 
