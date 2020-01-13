@@ -48,6 +48,9 @@ public class UtilityServiceImpl implements UtilityService {
 	private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
 	@Inject
+	private LogActivities logActivity;
+
+	@Inject
 	private FlagDao flagDao;
 
 	@Inject
@@ -151,6 +154,9 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 			if (!(errorList.isEmpty()))
 				return errorList;
+
+			logActivity.LogActivity(resultList.toString(), objectId, objectId, "observation", objectId,
+					"Observation tag updated");
 			return resultList;
 		} catch (Exception e) {
 			logger.error(e.getMessage());

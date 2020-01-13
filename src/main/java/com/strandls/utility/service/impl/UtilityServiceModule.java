@@ -16,5 +16,6 @@ public class UtilityServiceModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(UtilityService.class).to(UtilityServiceImpl.class).in(Scopes.SINGLETON);
+		bind(LogActivities.class).in(Scopes.SINGLETON);
 	}
 }
