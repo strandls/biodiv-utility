@@ -128,14 +128,17 @@ public class UtilityServiceImpl implements UtilityService {
 			Long objectId = tagsMapping.getObjectId();
 			List<String> resultList = new ArrayList<String>();
 			List<String> errorList = new ArrayList<String>();
+			String description = "";
 			for (Tags tag : tagsMapping.getTags()) {
 				if (tag.getVersion() == null)
 					tag.setVersion(0L);
 				TagLinks result = null;
 				if (tag.getId() == null) {
 					Tags insertedTag = tagsDao.save(tag);
+					description = description + insertedTag.getName() + ",";
 					if (insertedTag.getId() != null) {
-						TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
+						TagLinks tagLink = new TagLinks(null, insertedTag.getVersion(), insertedTag.getId(), objectId,
+								objectType);
 						result = tagLinkDao.save(tagLink);
 					}
 				} else {
@@ -144,6 +147,7 @@ public class UtilityServiceImpl implements UtilityService {
 						errorList.add("Mapping not proper for TagName and id Supplied for ID" + tag.getName() + " and "
 								+ tag.getId());
 					} else {
+						description = description + storedTag.getName() + ",";
 						TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
 						result = tagLinkDao.save(tagLink);
 					}
@@ -154,8 +158,8 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 			if (!(errorList.isEmpty()))
 				return errorList;
-
-			logActivity.LogActivity(resultList.toString(), objectId, objectId, "observation", objectId,
+			description = description.substring(0, description.length() - 1);
+			logActivity.LogActivity(description, objectId, objectId, "observation", objectId,
 					"Observation tag updated");
 			return resultList;
 		} catch (Exception e) {
@@ -217,6 +221,7 @@ public class UtilityServiceImpl implements UtilityService {
 		List<Tags> tags = new ArrayList<Tags>();
 
 		try {
+			String description = "";
 			Long objectId = tagsMapping.getObjectId();
 			List<TagLinks> previousTags = tagLinkDao.findObjectTags(objectType, objectId);
 			List<Tags> newTags = tagsMapping.getTags();
@@ -242,6 +247,7 @@ public class UtilityServiceImpl implements UtilityService {
 					TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
 					tagLinkDao.save(tagLink);
 				}
+				description = description + tag.getName() + ",";
 
 			}
 
@@ -250,6 +256,9 @@ public class UtilityServiceImpl implements UtilityService {
 				tags.add(tagsDao.findById(tagLinks.getTagId()));
 			}
 
+			description = description.substring(0, description.length() - 1);
+			logActivity.LogActivity(description, objectId, objectId, "observation", objectId,
+					"Observation tag updated");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

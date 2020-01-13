@@ -247,7 +247,7 @@ public class UtilityController {
 			@ApiResponse(code = 400, message = "DB not Found", response = String.class),
 			@ApiResponse(code = 206, message = "partial succes ", response = String.class) })
 
-	public Response createTags(@PathParam("objectType") String objectType,
+	public Response createTags(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
 			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
 		try {
 			List<String> result = utilityService.createTagsMapping(objectType, tagsMapping);
