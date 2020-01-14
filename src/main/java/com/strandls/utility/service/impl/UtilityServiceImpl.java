@@ -78,6 +78,8 @@ public class UtilityServiceImpl implements UtilityService {
 	@Override
 	public FlagIbp fetchByFlagIdIbp(Long id) {
 		Flag flag = flagDao.findById(id);
+		if (flag == null)
+			return null;
 		FlagIbp ibp = new FlagIbp(flag.getFlag(), flag.getNotes());
 		return ibp;
 	}
