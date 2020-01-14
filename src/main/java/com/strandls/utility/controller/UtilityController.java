@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -96,15 +97,15 @@ public class UtilityController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find flag by Observation Id", notes = "Return of Flags", response = Flag.class)
+	@ApiOperation(value = "Find flag by Observation Id", notes = "Return of Flags", response = Flag.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Flag not found", response = String.class) })
 
-	public Response getFlagByObservation(@PathParam("objectType") String objectType,
+	public Response getFlagByObjectType(@PathParam("objectType") String objectType,
 			@PathParam("objectId") String objectId) {
 
 		try {
 			Long id = Long.parseLong(objectId);
-			Flag flag = utilityService.fetchByFlagObject(objectType, id);
+			List<Flag> flag = utilityService.fetchByFlagObject(objectType, id);
 			return Response.status(Status.OK).entity(flag).build();
 
 		} catch (Exception e) {
@@ -132,6 +133,58 @@ public class UtilityController {
 
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.CREATE + ApiConstants.FLAG + "/{type}/{objectId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ValidateUser
+
+	@ApiOperation(value = "Flag a Object", notes = "Return a list of flag to the Object", response = Flag.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to flag a object", response = String.class),
+			@ApiResponse(code = 406, message = "User has already flagged", response = String.class) })
+
+	public Response createFlag(@Context HttpServletRequest request, @PathParam("type") String type,
+			@PathParam("objectId") String objectId, @ApiParam(name = "flagIbp") FlagIbp flagIbp) {
+		try {
+			CommonProfile Profile = AuthUtil.getProfileFromRequest(request);
+			Long userId = Long.parseLong(Profile.getId());
+			Long objId = Long.parseLong(objectId);
+			List<Flag> result = utilityService.createFlag(type, userId, objId, flagIbp);
+			if (result.isEmpty())
+				return Response.status(Status.NOT_ACCEPTABLE).entity("User Allowed Flagged").build();
+			return Response.status(Status.OK).entity(result).build();
+
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@DELETE
+	@Path(ApiConstants.UNFLAG + "/{objectType}/{objectId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ValidateUser
+
+	@ApiOperation(value = "Unflag a Object", notes = "Return a list of flag to the Object", response = Flag.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to unflag a object", response = String.class),
+			@ApiResponse(code = 406, message = "User is not allowed to unflag", response = String.class) })
+
+	public Response unFlag(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
+			@PathParam("objectId") String objectId) {
+		try {
+			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
+			Long userId = Long.parseLong(profile.getId());
+			Long objId = Long.parseLong(objectId);
+			List<Flag> result = utilityService.removeFlag(objectType, userId, objId);
+			if (result == null)
+				return Response.status(Status.NOT_ACCEPTABLE).entity("User not allowed to Unflag").build();
+			return Response.status(Status.OK).entity(result).build();
+
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
 

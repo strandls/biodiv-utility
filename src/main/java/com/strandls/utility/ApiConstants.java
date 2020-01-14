@@ -14,6 +14,7 @@ public class ApiConstants {
 //	<----------CONTROLLER PATHS------------->
 	public static final String SERVICES = "/services";
 	public static final String FLAG = "/flag";
+	public static final String UNFLAG = "/unflag";
 	public static final String OBJECTFLAG = "/objectflag";
 	public static final String USERFLAG = "/userflag";
 	public static final String FOLLOW = "/follow";

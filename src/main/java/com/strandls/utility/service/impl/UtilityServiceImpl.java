@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -82,8 +83,10 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public Flag fetchByFlagObject(String objectType, Long objectId) {
-		Flag flag = flagDao.findByObjectId(objectType, objectId);
+	public List<Flag> fetchByFlagObject(String objectType, Long objectId) {
+		if (objectType.equalsIgnoreCase("observation"))
+			objectType = "species.participation.Observation";
+		List<Flag> flag = flagDao.findByObjectId(objectType, objectId);
 		return flag;
 	}
 
@@ -91,6 +94,43 @@ public class UtilityServiceImpl implements UtilityService {
 	public List<Flag> fetchFlagByUserId(Long id) {
 		List<Flag> flags = flagDao.findByUserId(id);
 		return flags;
+	}
+
+	@Override
+	public List<Flag> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp) {
+		if (type.equalsIgnoreCase("observaiton"))
+			type = "species.participation.Observation";
+
+		Flag flag = flagDao.findByObjectIdUserId(objectId, userId, type);
+		if (flag == null) {
+			flag = new Flag(null, 0L, userId, new Date(), flagIbp.getFlag(), flagIbp.getNotes(), objectId, type);
+			flag = flagDao.save(flag);
+			String description = flag.getFlag() + ":" + flag.getNotes();
+			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flagged");
+
+			List<Flag> flagList = fetchByFlagObject(type, objectId);
+			return flagList;
+
+		}
+		return null;
+
+	}
+
+	@Override
+	public List<Flag> removeFlag(String type, Long userId, Long objectId) {
+		if (type.equalsIgnoreCase("observation"))
+			type = "species.participation.Observation";
+		Flag flag = flagDao.findByObjectIdUserId(objectId, userId, type);
+		if (flag != null) {
+			flagDao.delete(flag);
+			String description = flag.getFlag() + ":" + flag.getNotes();
+			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flag removed");
+
+			List<Flag> flagList = fetchByFlagObject(type, objectId);
+			return flagList;
+
+		}
+		return null;
 	}
 
 	@Override

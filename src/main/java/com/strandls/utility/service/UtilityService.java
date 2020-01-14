@@ -23,9 +23,13 @@ public interface UtilityService {
 
 	public FlagIbp fetchByFlagIdIbp(Long id);
 
-	public Flag fetchByFlagObject(String objectType, Long objectId);
+	public List<Flag> fetchByFlagObject(String objectType, Long objectId);
 
 	public List<Flag> fetchFlagByUserId(Long id);
+
+	public List<Flag> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp);
+
+	public List<Flag> removeFlag(String type, Long userId, Long objectId);
 
 	public Follow fetchByFollowId(Long id);
 
