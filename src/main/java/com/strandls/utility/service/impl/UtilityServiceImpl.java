@@ -24,13 +24,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.strandls.utility.dao.FlagDao;
-import com.strandls.utility.dao.FollowDao;
 import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
-import com.strandls.utility.pojo.Follow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagLinks;
@@ -53,9 +51,6 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private FlagDao flagDao;
-
-	@Inject
-	private FollowDao followDao;
 
 	@Inject
 	private TagLinksDao tagLinkDao;
@@ -135,23 +130,6 @@ public class UtilityServiceImpl implements UtilityService {
 		return null;
 	}
 
-	@Override
-	public Follow fetchByFollowId(Long id) {
-		Follow follow = followDao.findById(id);
-		return follow;
-	}
-
-	@Override
-	public Follow fetchByFollowObject(String objectType, Long objectId, Long authorId) {
-		Follow follow = followDao.findByObject(objectType, objectId, authorId);
-		return follow;
-	}
-
-	@Override
-	public List<Follow> fetchFollowByUser(Long authorId) {
-		List<Follow> follows = followDao.findByUser(authorId);
-		return follows;
-	}
 
 	@Override
 	public List<Tags> fetchTags(String objectType, Long id) {

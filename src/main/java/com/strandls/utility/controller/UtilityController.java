@@ -28,7 +28,6 @@ import com.strandls.authentication_utility.util.AuthUtil;
 import com.strandls.utility.ApiConstants;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
-import com.strandls.utility.pojo.Follow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
@@ -188,69 +187,7 @@ public class UtilityController {
 		}
 	}
 
-	@GET
-	@Path(ApiConstants.FOLLOW + "/{followId}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-
-	@ApiOperation(value = "Find follow by followid", notes = "Return follows", response = Follow.class)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
-
-	public Response getByFollowID(@PathParam("followId") String followId) {
-
-		try {
-			Long id = Long.parseLong(followId);
-			Follow follow = utilityService.fetchByFollowId(id);
-			return Response.status(Status.OK).entity(follow).build();
-		} catch (Exception e) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-	}
-
-	@GET
-	@Path(ApiConstants.OBJECTFOLLOW + "/{objectType}/{objectId}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-
-	@ValidateUser
-	@ApiOperation(value = "Find follow by objectId", notes = "Return follows", response = Follow.class)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
-
-	public Response getFollowByObject(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId) {
-		try {
-
-			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
-			Long objId = Long.parseLong(objectId);
-			Long authId = Long.parseLong(profile.getId());
-			Follow follow = utilityService.fetchByFollowObject(objectType, objId, authId);
-			return Response.status(Status.OK).entity(follow).build();
-		} catch (Exception e) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-	}
-
-	@GET
-	@Path(ApiConstants.USERFOLLOW + "/{userId}")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
-
-	@ValidateUser
-	@ApiOperation(value = "Find follow by userID", notes = "Return list follows", response = Follow.class, responseContainer = "List")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Follow not Found", response = String.class) })
-
-	public Response getFollowbyUser(@Context HttpServletRequest request) {
-
-		try {
-			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
-			Long id = Long.parseLong(profile.getId());
-			List<Follow> follows = utilityService.fetchFollowByUser(id);
-			return Response.status(Status.OK).entity(follows).build();
-		} catch (Exception e) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-
-	}
+	
 
 	@GET
 	@Path(ApiConstants.TAGS + ApiConstants.AUTOCOMPLETE)

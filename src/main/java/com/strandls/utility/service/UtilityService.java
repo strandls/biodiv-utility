@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
-import com.strandls.utility.pojo.Follow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
@@ -31,11 +30,7 @@ public interface UtilityService {
 
 	public List<Flag> removeFlag(String type, Long userId, Long objectId);
 
-	public Follow fetchByFollowId(Long id);
-
-	public Follow fetchByFollowObject(String objectType, Long objectId, Long authorId);
-
-	public List<Follow> fetchFollowByUser(Long authorId);
+	
 
 	public List<Tags> fetchTags(String objectType, Long id);
 
