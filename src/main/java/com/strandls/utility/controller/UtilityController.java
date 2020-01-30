@@ -39,6 +39,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import net.minidev.json.JSONArray;
 
 /**
  * @author Abhishek Rudra
@@ -172,12 +173,17 @@ public class UtilityController {
 			@ApiResponse(code = 406, message = "User is not allowed to unflag", response = String.class) })
 
 	public Response unFlag(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId) {
+			@PathParam("objectId") String objectId, @ApiParam(name = "flag") Flag flag) {
 		try {
 			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
+			JSONArray userRole = (JSONArray) profile.getAttribute("roles");
 			Long userId = Long.parseLong(profile.getId());
-			Long objId = Long.parseLong(objectId);
-			List<Flag> result = utilityService.removeFlag(objectType, userId, objId);
+			List<Flag> result = null;
+			if (userRole.contains("ROLE_ADMIN") || userId.equals(flag.getAuthorId())) {
+				Long objId = Long.parseLong(objectId);
+				result = utilityService.removeFlag(objectType, objId, flag);
+			}
+
 			if (result == null)
 				return Response.status(Status.NOT_ACCEPTABLE).entity("User not allowed to Unflag").build();
 			return Response.status(Status.OK).entity(result).build();
@@ -186,8 +192,6 @@ public class UtilityController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
-
-	
 
 	@GET
 	@Path(ApiConstants.TAGS + ApiConstants.AUTOCOMPLETE)

@@ -114,14 +114,14 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<Flag> removeFlag(String type, Long userId, Long objectId) {
+	public List<Flag> removeFlag(String type, Long objectId, Flag flag) {
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
-		Flag flag = flagDao.findByObjectIdUserId(objectId, userId, type);
-		if (flag != null) {
-			flagDao.delete(flag);
-			String description = flag.getFlag() + ":" + flag.getNotes();
-			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flag removed");
+		Flag flagged = flagDao.findByObjectIdUserId(objectId, flag.getAuthorId(), type);
+		if (flagged != null) {
+			flagDao.delete(flagged);
+			String description = flagged.getFlag() + ":" + flagged.getNotes();
+			logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(), "Flag removed");
 
 			List<Flag> flagList = fetchByFlagObject(type, objectId);
 			return flagList;
@@ -129,7 +129,6 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 		return null;
 	}
-
 
 	@Override
 	public List<Tags> fetchTags(String objectType, Long id) {

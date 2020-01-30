@@ -28,9 +28,7 @@ public interface UtilityService {
 
 	public List<Flag> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp);
 
-	public List<Flag> removeFlag(String type, Long userId, Long objectId);
-
-	
+	public List<Flag> removeFlag(String type, Long objectId, Flag flag);
 
 	public List<Tags> fetchTags(String objectType, Long id);
 
