@@ -162,7 +162,7 @@ public class UtilityController {
 		}
 	}
 
-	@DELETE
+	@PUT
 	@Path(ApiConstants.UNFLAG + "/{objectType}/{objectId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)

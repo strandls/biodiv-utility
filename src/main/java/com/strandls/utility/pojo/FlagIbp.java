@@ -13,6 +13,13 @@ public class FlagIbp {
 	private String notes;
 
 	/**
+	 * 
+	 */
+	public FlagIbp() {
+		super();
+	}
+
+	/**
 	 * @param flag
 	 * @param notes
 	 */

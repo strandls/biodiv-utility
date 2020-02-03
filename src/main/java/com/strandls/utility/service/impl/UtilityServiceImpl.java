@@ -95,7 +95,7 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Override
 	public List<Flag> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp) {
-		if (type.equalsIgnoreCase("observaiton"))
+		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
 
 		Flag flag = flagDao.findByObjectIdUserId(objectId, userId, type);
