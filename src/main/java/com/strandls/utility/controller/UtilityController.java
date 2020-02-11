@@ -27,6 +27,7 @@ import com.strandls.authentication_utility.util.AuthUtil;
 import com.strandls.utility.ApiConstants;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
+import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
@@ -38,7 +39,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import net.minidev.json.JSONArray;
 
 /**
  * @author Abhishek Rudra
@@ -96,7 +96,7 @@ public class UtilityController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find flag by Observation Id", notes = "Return of Flags", response = Flag.class, responseContainer = "List")
+	@ApiOperation(value = "Find flag by Observation Id", notes = "Return of Flags", response = FlagShow.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Flag not found", response = String.class) })
 
 	public Response getFlagByObjectType(@PathParam("objectType") String objectType,
@@ -104,7 +104,7 @@ public class UtilityController {
 
 		try {
 			Long id = Long.parseLong(objectId);
-			List<Flag> flag = utilityService.fetchByFlagObject(objectType, id);
+			List<FlagShow> flag = utilityService.fetchByFlagObject(objectType, id);
 			return Response.status(Status.OK).entity(flag).build();
 
 		} catch (Exception e) {
@@ -141,7 +141,7 @@ public class UtilityController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ValidateUser
 
-	@ApiOperation(value = "Flag a Object", notes = "Return a list of flag to the Object", response = Flag.class, responseContainer = "List")
+	@ApiOperation(value = "Flag a Object", notes = "Return a list of flag to the Object", response = FlagShow.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to flag a object", response = String.class),
 			@ApiResponse(code = 406, message = "User has already flagged", response = String.class) })
 
@@ -151,7 +151,7 @@ public class UtilityController {
 			CommonProfile Profile = AuthUtil.getProfileFromRequest(request);
 			Long userId = Long.parseLong(Profile.getId());
 			Long objId = Long.parseLong(objectId);
-			List<Flag> result = utilityService.createFlag(type, userId, objId, flagIbp);
+			List<FlagShow> result = utilityService.createFlag(type, userId, objId, flagIbp);
 			if (result.isEmpty())
 				return Response.status(Status.NOT_ACCEPTABLE).entity("User Allowed Flagged").build();
 			return Response.status(Status.OK).entity(result).build();
@@ -162,29 +162,24 @@ public class UtilityController {
 	}
 
 	@PUT
-	@Path(ApiConstants.UNFLAG + "/{objectType}/{objectId}")
+	@Path(ApiConstants.UNFLAG + "/{objectType}/{objectId}/{flagId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ValidateUser
 
-	@ApiOperation(value = "Unflag a Object", notes = "Return a list of flag to the Object", response = Flag.class, responseContainer = "List")
+	@ApiOperation(value = "Unflag a Object", notes = "Return a list of flag to the Object", response = FlagShow.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to unflag a object", response = String.class),
 			@ApiResponse(code = 406, message = "User is not allowed to unflag", response = String.class) })
 
 	public Response unFlag(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId, @ApiParam(name = "flag") Flag flag) {
+			@PathParam("objectId") String objectId, @PathParam("flagId") String fId) {
 		try {
 			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
-			JSONArray userRole = (JSONArray) profile.getAttribute("roles");
-			Long userId = Long.parseLong(profile.getId());
-			List<Flag> result = null;
-			if (userRole.contains("ROLE_ADMIN") || userId.equals(flag.getAuthorId())) {
-				Long objId = Long.parseLong(objectId);
-				result = utilityService.removeFlag(objectType, objId, flag);
-			}
 
-			if (result == null)
-				return Response.status(Status.NOT_ACCEPTABLE).entity("User not allowed to Unflag").build();
+			Long flagId = Long.parseLong(fId);
+			List<FlagShow> result = null;
+			Long objId = Long.parseLong(objectId);
+			result = utilityService.removeFlag(profile, objectType, objId, flagId);
 			return Response.status(Status.OK).entity(result).build();
 
 		} catch (Exception e) {

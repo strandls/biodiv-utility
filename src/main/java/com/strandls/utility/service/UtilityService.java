@@ -5,8 +5,11 @@ package com.strandls.utility.service;
 
 import java.util.List;
 
+import org.pac4j.core.profile.CommonProfile;
+
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
+import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
@@ -22,13 +25,13 @@ public interface UtilityService {
 
 	public FlagIbp fetchByFlagIdIbp(Long id);
 
-	public List<Flag> fetchByFlagObject(String objectType, Long objectId);
+	public List<FlagShow> fetchByFlagObject(String objectType, Long objectId);
 
 	public List<Flag> fetchFlagByUserId(Long id);
 
-	public List<Flag> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp);
+	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp);
 
-	public List<Flag> removeFlag(String type, Long objectId, Flag flag);
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId);
 
 	public List<Tags> fetchTags(String objectType, Long id);
 

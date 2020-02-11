@@ -47,6 +47,26 @@ public class TagsDao extends AbstractDAO<Tags, Long> {
 	}
 
 	@SuppressWarnings("unchecked")
+	public Tags fetchByName(String phrase) {
+		Session session = sessionFactory.openSession();
+		Tags tags = null;
+		Object[] result = null;
+		String qry = "SELECT id,version,strip_tags(name) FROM public.tags where strip_tags(name) ='" + phrase + "'";
+		try {
+			Query<Object[]> query = session.createNativeQuery(qry);
+			result = query.getSingleResult();
+			tags = new Tags(Long.parseLong(result[0].toString()), Long.parseLong(result[1].toString()),
+					result[2].toString());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return tags;
+
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<Tags> fetchNameByLike(String phrase) {
 		Session session = sessionFactory.openSession();
 		List<Tags> tagsList = new ArrayList<Tags>();

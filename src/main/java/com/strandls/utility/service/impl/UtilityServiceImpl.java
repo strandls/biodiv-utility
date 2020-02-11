@@ -18,23 +18,28 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.strandls.user.controller.UserServiceApi;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagIbp;
+import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagLinks;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
 import com.strandls.utility.service.UtilityService;
+
+import net.minidev.json.JSONArray;
 
 /**
  * @author Abhishek Rudra
@@ -48,6 +53,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private LogActivities logActivity;
+
+	@Inject
+	private UserServiceApi userService;
 
 	@Inject
 	private FlagDao flagDao;
@@ -80,11 +88,20 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<Flag> fetchByFlagObject(String objectType, Long objectId) {
-		if (objectType.equalsIgnoreCase("observation"))
-			objectType = "species.participation.Observation";
-		List<Flag> flag = flagDao.findByObjectId(objectType, objectId);
-		return flag;
+	public List<FlagShow> fetchByFlagObject(String objectType, Long objectId) {
+		try {
+			if (objectType.equalsIgnoreCase("observation"))
+				objectType = "species.participation.Observation";
+			List<Flag> flagList = flagDao.findByObjectId(objectType, objectId);
+			List<FlagShow> flagShow = new ArrayList<FlagShow>();
+			for (Flag flag : flagList) {
+				flagShow.add(new FlagShow(flag, userService.getUserIbp(flag.getAuthorId().toString())));
+			}
+			return flagShow;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
@@ -94,7 +111,7 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<Flag> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp) {
+	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp) {
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
 
@@ -105,7 +122,7 @@ public class UtilityServiceImpl implements UtilityService {
 			String description = flag.getFlag() + ":" + flag.getNotes();
 			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flagged");
 
-			List<Flag> flagList = fetchByFlagObject(type, objectId);
+			List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 			return flagList;
 
 		}
@@ -114,18 +131,26 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<Flag> removeFlag(String type, Long objectId, Flag flag) {
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId) {
+
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
-		Flag flagged = flagDao.findByObjectIdUserId(objectId, flag.getAuthorId(), type);
+		Flag flagged = flagDao.findById(flagId);
+
+		JSONArray userRole = (JSONArray) profile.getAttribute("roles");
+		Long userId = Long.parseLong(profile.getId());
+
 		if (flagged != null) {
-			flagDao.delete(flagged);
-			String description = flagged.getFlag() + ":" + flagged.getNotes();
-			logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(), "Flag removed");
+			if (userRole.contains("ROLE_ADMIN") || userId.equals(flagged.getAuthorId())) {
 
-			List<Flag> flagList = fetchByFlagObject(type, objectId);
-			return flagList;
+				flagDao.delete(flagged);
+				String description = flagged.getFlag() + ":" + flagged.getNotes();
+				logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(),
+						"Flag removed");
 
+				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
+				return flagList;
+			}
 		}
 		return null;
 	}
@@ -152,7 +177,12 @@ public class UtilityServiceImpl implements UtilityService {
 				if (tag.getVersion() == null)
 					tag.setVersion(0L);
 				TagLinks result = null;
+
+				Tags tagsCheck = tagsDao.fetchByName(tag.getName());
+				if (tagsCheck != null)
+					tag = tagsCheck;
 				if (tag.getId() == null) {
+
 					Tags insertedTag = tagsDao.save(tag);
 					description = description + insertedTag.getName() + ",";
 					if (insertedTag.getId() != null) {
