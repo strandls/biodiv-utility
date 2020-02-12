@@ -307,4 +307,21 @@ public class UtilityController {
 		}
 	}
 
+	@GET
+	@Path(ApiConstants.LANGUAGES + ApiConstants.TWOLETTERCODE + "/{code}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Fetch Language by two letter code", notes = "Returns Language by two letter code", response = Language.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 404, message = "Unable to return the Langauge", response = String.class) })
+
+	public Response getLanguageByTwoLetterCode(@PathParam("code") String code) {
+		try {
+			Language result = utilityService.getLanguageByTwoLetterCode(code);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
 }

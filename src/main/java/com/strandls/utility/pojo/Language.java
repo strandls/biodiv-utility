@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value = { "twoLetterCode" }, ignoreUnknown = true)
 public class Language implements Serializable {
 
+	public static final String DEFAULT_LANGUAGE = "English";
 	/**
 	 * 
 	 */

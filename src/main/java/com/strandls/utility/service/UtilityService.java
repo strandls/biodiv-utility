@@ -45,4 +45,6 @@ public interface UtilityService {
 
 	public List<Tags> tagsAutoSugguest(String phrase);
 
+	public Language getLanguageByTwoLetterCode(String language);
+
 }

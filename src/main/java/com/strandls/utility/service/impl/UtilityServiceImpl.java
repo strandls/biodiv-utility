@@ -320,4 +320,17 @@ public class UtilityServiceImpl implements UtilityService {
 		return result;
 	}
 
+	@Override
+	public Language getLanguageByTwoLetterCode(String language) {
+		Language lang = languageDao.findByPropertyWithCondition("twoLetterCode", language, "=");
+		if (lang == null) {
+			return getCurrentLanguage();
+		}
+		return lang;
+	}
+
+	private Language getCurrentLanguage() {
+		return languageDao.findByPropertyWithCondition("name", Language.DEFAULT_LANGUAGE, "=");
+	}
+
 }
