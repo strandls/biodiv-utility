@@ -22,16 +22,18 @@ import javax.ws.rs.core.Response.Status;
 import org.pac4j.core.profile.CommonProfile;
 
 import com.google.inject.Inject;
+import com.strandls.activity.pojo.MailData;
 import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.authentication_utility.util.AuthUtil;
 import com.strandls.utility.ApiConstants;
 import com.strandls.utility.pojo.Flag;
+import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
-import com.strandls.utility.pojo.TagsMapping;
+import com.strandls.utility.pojo.TagsMappingData;
 import com.strandls.utility.service.UtilityService;
 
 import io.swagger.annotations.Api;
@@ -146,12 +148,12 @@ public class UtilityController {
 			@ApiResponse(code = 406, message = "User has already flagged", response = String.class) })
 
 	public Response createFlag(@Context HttpServletRequest request, @PathParam("type") String type,
-			@PathParam("objectId") String objectId, @ApiParam(name = "flagIbp") FlagIbp flagIbp) {
+			@PathParam("objectId") String objectId, @ApiParam(name = "flagIbp") FlagCreateData flagCreateData) {
 		try {
 			CommonProfile Profile = AuthUtil.getProfileFromRequest(request);
 			Long userId = Long.parseLong(Profile.getId());
 			Long objId = Long.parseLong(objectId);
-			List<FlagShow> result = utilityService.createFlag(type, userId, objId, flagIbp);
+			List<FlagShow> result = utilityService.createFlag(type, userId, objId, flagCreateData);
 			if (result.isEmpty())
 				return Response.status(Status.NOT_ACCEPTABLE).entity("User Allowed Flagged").build();
 			return Response.status(Status.OK).entity(result).build();
@@ -172,14 +174,14 @@ public class UtilityController {
 			@ApiResponse(code = 406, message = "User is not allowed to unflag", response = String.class) })
 
 	public Response unFlag(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId, @PathParam("flagId") String fId) {
+			@PathParam("objectId") String objectId, @PathParam("flagId") String fId,@ApiParam(name = "mailData") MailData mailData) {
 		try {
 			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
 
 			Long flagId = Long.parseLong(fId);
 			List<FlagShow> result = null;
 			Long objId = Long.parseLong(objectId);
-			result = utilityService.removeFlag(profile, objectType, objId, flagId);
+			result = utilityService.removeFlag(profile, objectType, objId, flagId,mailData);
 			return Response.status(Status.OK).entity(result).build();
 
 		} catch (Exception e) {
@@ -236,9 +238,9 @@ public class UtilityController {
 			@ApiResponse(code = 206, message = "partial succes ", response = String.class) })
 
 	public Response createTags(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
+			@ApiParam(name = "tagsMappingData") TagsMappingData tagsMappingData) {
 		try {
-			List<String> result = utilityService.createTagsMapping(objectType, tagsMapping);
+			List<String> result = utilityService.createTagsMapping(objectType, tagsMappingData);
 			if (result == null)
 				return Response.status(Status.CONFLICT).entity("Error occured in transaction").build();
 			else {
@@ -262,9 +264,9 @@ public class UtilityController {
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to edit", response = String.class) })
 
 	public Response updateTags(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@ApiParam(name = "tagsMapping") TagsMapping tagsMapping) {
+			@ApiParam(name = "tagsMappingData") TagsMappingData tagsMappingData) {
 		try {
-			List<Tags> result = utilityService.updateTags(objectType, tagsMapping);
+			List<Tags> result = utilityService.updateTags(objectType, tagsMappingData);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();

@@ -7,13 +7,15 @@ import java.util.List;
 
 import org.pac4j.core.profile.CommonProfile;
 
+import com.strandls.activity.pojo.MailData;
 import com.strandls.utility.pojo.Flag;
+import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
-import com.strandls.utility.pojo.TagsMapping;
+import com.strandls.utility.pojo.TagsMappingData;
 
 /**
  * @author Abhishek Rudra
@@ -29,19 +31,19 @@ public interface UtilityService {
 
 	public List<Flag> fetchFlagByUserId(Long id);
 
-	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp);
+	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagCreateData flagCreateData);
 
-	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId);
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,MailData mailData);
 
 	public List<Tags> fetchTags(String objectType, Long id);
 
-	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping);
+	public List<String> createTagsMapping(String objectType, TagsMappingData tagsMappingData);
 
 	public ParsedName findParsedName(String scientificName);
 
 	public List<Language> findAllLanguages(Boolean isDirty);
 
-	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping);
+	public List<Tags> updateTags(String objectType, TagsMappingData tagsMappingData);
 
 	public List<Tags> tagsAutoSugguest(String phrase);
 

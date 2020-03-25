@@ -24,12 +24,14 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Flag;
+import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
@@ -37,6 +39,7 @@ import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.TagLinks;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
+import com.strandls.utility.pojo.TagsMappingData;
 import com.strandls.utility.service.UtilityService;
 
 import net.minidev.json.JSONArray;
@@ -111,16 +114,18 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagIbp flagIbp) {
+	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagCreateData flagCreateData) {
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
 
+		FlagIbp flagIbp = flagCreateData.getFlagIbp();
 		Flag flag = flagDao.findByObjectIdUserId(objectId, userId, type);
 		if (flag == null) {
 			flag = new Flag(null, 0L, userId, new Date(), flagIbp.getFlag(), flagIbp.getNotes(), objectId, type);
 			flag = flagDao.save(flag);
 			String description = flag.getFlag() + ":" + flag.getNotes();
-			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flagged");
+			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
+					flagCreateData.getMailData());
 
 			List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 			return flagList;
@@ -131,7 +136,7 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId) {
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,MailData mailData) {
 
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
@@ -146,7 +151,7 @@ public class UtilityServiceImpl implements UtilityService {
 				flagDao.delete(flagged);
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
 				logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(),
-						"Flag removed");
+						"Flag removed",mailData);
 
 				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 				return flagList;
@@ -166,9 +171,10 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping) {
+	public List<String> createTagsMapping(String objectType, TagsMappingData tagsMappingData) {
 
 		try {
+			TagsMapping tagsMapping = tagsMappingData.getTagsMapping();
 			Long objectId = tagsMapping.getObjectId();
 			List<String> resultList = new ArrayList<String>();
 			List<String> errorList = new ArrayList<String>();
@@ -209,7 +215,7 @@ public class UtilityServiceImpl implements UtilityService {
 				return errorList;
 			description = description.substring(0, description.length() - 1);
 			logActivity.LogActivity(description, objectId, objectId, "observation", objectId,
-					"Observation tag updated");
+					"Observation tag updated",tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -266,11 +272,12 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<Tags> updateTags(String objectType, TagsMapping tagsMapping) {
+	public List<Tags> updateTags(String objectType, TagsMappingData tagsMappingData) {
 		List<Tags> tags = new ArrayList<Tags>();
 
 		try {
 			String description = "";
+			TagsMapping tagsMapping = tagsMappingData.getTagsMapping();
 			Long objectId = tagsMapping.getObjectId();
 			List<TagLinks> previousTags = tagLinkDao.findObjectTags(objectType, objectId);
 			List<Tags> newTags = tagsMapping.getTags();
@@ -307,7 +314,7 @@ public class UtilityServiceImpl implements UtilityService {
 
 			description = description.substring(0, description.length() - 1);
 			logActivity.LogActivity(description, objectId, objectId, "observation", objectId,
-					"Observation tag updated");
+					"Observation tag updated",tagsMappingData.getMailData());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
