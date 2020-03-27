@@ -46,16 +46,16 @@ public class FlagDao extends AbstractDAO<Flag, Long> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Flag findByObjectId(String objType, Long id) {
+	public List<Flag> findByObjectId(String objType, Long id) {
 		String qry = "from Flag f where f.objectType = :objType and f.objectId = :id";
 		Session session = sessionFactory.openSession();
-		Flag flag = null;
+		List<Flag> flag = null;
 		try {
 			Query<Flag> query = session.createQuery(qry);
 			query.setParameter("objType", objType);
 			query.setParameter("id", id);
 
-			flag = query.getSingleResult();
+			flag = query.getResultList();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		} finally {
@@ -85,6 +85,27 @@ public class FlagDao extends AbstractDAO<Flag, Long> {
 
 		return result;
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public Flag findByObjectIdUserId(Long objectId, Long userId, String objectType) {
+		Session session = sessionFactory.openSession();
+		Flag result = null;
+		String qry = "from Flag where objectType = :objType and objectId = :id and authorId = :userId";
+		try {
+			Query<Flag> query = session.createQuery(qry);
+			query.setParameter("objType", objectType);
+			query.setParameter("id", objectId);
+			query.setParameter("userId", userId);
+
+			result = query.getSingleResult();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return result;
 	}
 
 }

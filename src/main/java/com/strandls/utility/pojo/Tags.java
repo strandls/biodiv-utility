@@ -32,6 +32,25 @@ public class Tags implements Serializable {
 	private Long version;
 	private String name;
 
+	/**
+	 * 
+	 */
+	public Tags() {
+		super();
+	}
+
+	/**
+	 * @param id
+	 * @param version
+	 * @param name
+	 */
+	public Tags(Long id, Long version, String name) {
+		super();
+		this.id = id;
+		this.version = version;
+		this.name = name;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")

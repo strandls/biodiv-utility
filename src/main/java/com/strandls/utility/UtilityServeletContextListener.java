@@ -21,9 +21,14 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Scopes;
 import com.google.inject.servlet.GuiceServletContextListener;
+import com.strandls.activity.controller.ActivitySerivceApi;
+import com.strandls.authentication_utility.filter.FilterModule;
+import com.strandls.user.controller.UserServiceApi;
 import com.strandls.utility.controller.UtilityControllerModule;
 import com.strandls.utility.dao.UtilityDaoModule;
 import com.strandls.utility.service.impl.UtilityServiceModule;
@@ -58,16 +63,22 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 
 				configuration = configuration.configure();
 				SessionFactory sessionFactory = configuration.buildSessionFactory();
-				
+
 				Map<String, String> props = new HashMap<String, String>();
 				props.put("javax.ws.rs.Application", ApplicationConfig.class.getName());
 				props.put("jersey.config.server.wadl.disableWadl", "true");
 
-				bind(SessionFactory.class).toInstance(sessionFactory);
+				ObjectMapper objectMapper = new ObjectMapper();
+				bind(ObjectMapper.class).toInstance(objectMapper);
 
-				serve("/api/*").with(GuiceContainer.class,props);
+				bind(SessionFactory.class).toInstance(sessionFactory);
+				bind(ActivitySerivceApi.class).in(Scopes.SINGLETON);
+				bind(UserServiceApi.class).in(Scopes.SINGLETON);
+				serve("/api/*").with(GuiceContainer.class, props);
+				filter("/*").through(SwaggerFilter.class);
+
 			}
-		}, new UtilityControllerModule(), new UtilityServiceModule(),new UtilityDaoModule());
+		}, new UtilityControllerModule(), new FilterModule(), new UtilityServiceModule(), new UtilityDaoModule());
 
 		return injector;
 

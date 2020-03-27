@@ -65,4 +65,23 @@ public class TagLinksDao extends AbstractDAO<TagLinks, Long> {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	public TagLinks checkIfTagsLinked(String objectType, Long objectId, Long tagId) {
+		String qry = "from TagLinks where type = :type and tagRefer = :objectId and tagId = :tagId";
+		Session session = sessionFactory.openSession();
+		TagLinks result = null;
+		try {
+			Query<TagLinks> query = session.createQuery(qry);
+			query.setParameter("type", objectType);
+			query.setParameter("objectId", objectId);
+			query.setParameter("tagId", tagId);
+			result = query.getSingleResult();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+
 }

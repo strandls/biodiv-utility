@@ -14,6 +14,7 @@ public class ApiConstants {
 //	<----------CONTROLLER PATHS------------->
 	public static final String SERVICES = "/services";
 	public static final String FLAG = "/flag";
+	public static final String UNFLAG = "/unflag";
 	public static final String OBJECTFLAG = "/objectflag";
 	public static final String USERFLAG = "/userflag";
 	public static final String FOLLOW = "/follow";
@@ -21,6 +22,9 @@ public class ApiConstants {
 	public static final String USERFOLLOW = "/userfollow";
 	public static final String IBP = "/ibp";
 	public static final String TAGS = "/tags";
-	public static final String FEATURED = "/featured";
-
+	public static final String NAMEPARSER = "/nameparser";
+	public static final String LANGUAGES = "/languages";
+	public static final String CREATE = "/create";
+	public static final String AUTOCOMPLETE = "/autocomplete";
+	public static final String TWOLETTERCODE = "/twoLetterCode";
 }

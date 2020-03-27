@@ -4,7 +4,7 @@
 package com.strandls.utility.pojo;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,12 +30,43 @@ public class Flag implements Serializable {
 	private static final long serialVersionUID = -5614378769650481194L;
 
 	private Long id;
+	private Long version;
 	private Long authorId;
 	private Date createdOn;
 	private String flag;
 	private String notes;
 	private Long objectId;
 	private String objectType;
+
+	/**
+	 * 
+	 */
+	public Flag() {
+		super();
+	}
+
+	/**
+	 * @param id
+	 * @param version
+	 * @param authorId
+	 * @param createdOn
+	 * @param flag
+	 * @param notes
+	 * @param objectId
+	 * @param objectType
+	 */
+	public Flag(Long id, Long version, Long authorId, Date createdOn, String flag, String notes, Long objectId,
+			String objectType) {
+		super();
+		this.id = id;
+		this.version = version;
+		this.authorId = authorId;
+		this.createdOn = createdOn;
+		this.flag = flag;
+		this.notes = notes;
+		this.objectId = objectId;
+		this.objectType = objectType;
+	}
 
 	@Id
 	@GeneratedValue
@@ -46,6 +77,15 @@ public class Flag implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	@Column(name = "version")
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 
 	@Column(name = "author_id")

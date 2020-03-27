@@ -13,55 +13,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.strandls.utility.pojo.Featured;
+import com.strandls.utility.pojo.Language;
 import com.strandls.utility.util.AbstractDAO;
 
 /**
  * @author Abhishek Rudra
  *
  */
-public class FeaturedDao extends AbstractDAO<Featured, Long> {
+public class LanguageDao extends AbstractDAO<Language, Long> {
 
-	private final Logger logger = LoggerFactory.getLogger(FeaturedDao.class);
+	private final Logger logger = LoggerFactory.getLogger(LanguageDao.class);
 
 	/**
 	 * @param sessionFactory
 	 */
 	@Inject
-	protected FeaturedDao(SessionFactory sessionFactory) {
+	protected LanguageDao(SessionFactory sessionFactory) {
 		super(sessionFactory);
 	}
 
 	@Override
-	public Featured findById(Long id) {
+	public Language findById(Long id) {
+
 		Session session = sessionFactory.openSession();
-		Featured entity = null;
+		Language entity = null;
 		try {
-			entity = session.get(Featured.class, id);
+			entity = session.get(Language.class, id);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		} finally {
 			session.close();
 		}
+
 		return entity;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Featured> fetchAllFeatured(String objectType, Long objectId) {
-		List<Featured> result = new ArrayList<Featured>();
+	public List<Language> findAll(Boolean isDirty) {
+		String qry = "from Language where isDirty = :isDirty";
 		Session session = sessionFactory.openSession();
-		String qry = "from Featured where objectType = :objectType and objectId = :objectId";
+		List<Language> resultList = new ArrayList<Language>();
 		try {
-			Query<Featured> query = session.createQuery(qry);
-			query.setParameter("objectType", objectType);
-			query.setParameter("objectId", objectId);
-			result = query.getResultList();
+			Query<Language> query = session.createQuery(qry);
+			query.setParameter("isDirty", isDirty);
+			resultList = query.getResultList();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		} finally {
 			session.close();
 		}
-		return result;
+		return resultList;
 	}
 
 }

@@ -5,11 +5,17 @@ package com.strandls.utility.service;
 
 import java.util.List;
 
-import com.strandls.utility.pojo.Featured;
+import org.pac4j.core.profile.CommonProfile;
+
+import com.strandls.activity.pojo.MailData;
 import com.strandls.utility.pojo.Flag;
+import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
-import com.strandls.utility.pojo.Follow;
-import com.strandls.utility.pojo.TagsMapping;
+import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.Language;
+import com.strandls.utility.pojo.ParsedName;
+import com.strandls.utility.pojo.Tags;
+import com.strandls.utility.pojo.TagsMappingData;
 
 /**
  * @author Abhishek Rudra
@@ -21,19 +27,26 @@ public interface UtilityService {
 
 	public FlagIbp fetchByFlagIdIbp(Long id);
 
-	public Flag fetchByFlagObject(String objectType, Long objectId);
+	public List<FlagShow> fetchByFlagObject(String objectType, Long objectId);
 
 	public List<Flag> fetchFlagByUserId(Long id);
 
-	public Follow fetchByFollowId(Long id);
+	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagCreateData flagCreateData);
 
-	public Follow fetchByFollowObject(String objectType, Long objectId, Long authorId);
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,MailData mailData);
 
-	public List<Follow> fetchFollowByUser(Long authorId);
+	public List<Tags> fetchTags(String objectType, Long id);
 
-	public List<String> fetchTags(String objectType, Long id);
+	public List<String> createTagsMapping(String objectType, TagsMappingData tagsMappingData);
 
-	public List<Featured> fetchFeatured(String objectType, Long id);
+	public ParsedName findParsedName(String scientificName);
 
-	public List<String> createTagsMapping(String objectType, TagsMapping tagsMapping);
+	public List<Language> findAllLanguages(Boolean isDirty);
+
+	public List<Tags> updateTags(String objectType, TagsMappingData tagsMappingData);
+
+	public List<Tags> tagsAutoSugguest(String phrase);
+
+	public Language getLanguageByTwoLetterCode(String language);
+
 }
