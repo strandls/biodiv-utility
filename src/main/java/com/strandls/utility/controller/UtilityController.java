@@ -32,6 +32,7 @@ import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
+import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMappingData;
 import com.strandls.utility.service.UtilityService;
@@ -326,4 +327,20 @@ public class UtilityController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
+	
+	@GET
+	@Path(ApiConstants.PORTALSTATS)
+	@Produces(MediaType.APPLICATION_JSON)
+	
+	@ApiOperation(value = "Get portal statistics", notes = "Return the portal statistics",response = PortalStats.class)
+	@ApiResponses(value = {@ApiResponse(code = 400,message = "unable to fetch the data",response = String.class)})
+	public Response getPortalstats() {
+		try {
+			PortalStats result = utilityService.getportalStats();
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+	
 }
