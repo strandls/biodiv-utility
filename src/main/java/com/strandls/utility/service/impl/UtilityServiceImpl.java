@@ -28,6 +28,7 @@ import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.LanguageDao;
+import com.strandls.utility.dao.PortalStatsDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Flag;
@@ -36,6 +37,7 @@ import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
+import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.TagLinks;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
@@ -74,6 +76,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private LanguageDao languageDao;
+
+	@Inject
+	private PortalStatsDao portalStatusDao;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -136,7 +141,8 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,MailData mailData) {
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,
+			MailData mailData) {
 
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
@@ -150,8 +156,8 @@ public class UtilityServiceImpl implements UtilityService {
 
 				flagDao.delete(flagged);
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
-				logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(),
-						"Flag removed",mailData);
+				logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(), "Flag removed",
+						mailData);
 
 				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 				return flagList;
@@ -214,8 +220,8 @@ public class UtilityServiceImpl implements UtilityService {
 			if (!(errorList.isEmpty()))
 				return errorList;
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(description, objectId, objectId, "observation", objectId,
-					"Observation tag updated",tagsMappingData.getMailData());
+			logActivity.LogActivity(description, objectId, objectId, "observation", objectId, "Observation tag updated",
+					tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -313,8 +319,8 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(description, objectId, objectId, "observation", objectId,
-					"Observation tag updated",tagsMappingData.getMailData());
+			logActivity.LogActivity(description, objectId, objectId, "observation", objectId, "Observation tag updated",
+					tagsMappingData.getMailData());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -338,6 +344,12 @@ public class UtilityServiceImpl implements UtilityService {
 
 	private Language getCurrentLanguage() {
 		return languageDao.findByPropertyWithCondition("name", Language.DEFAULT_LANGUAGE, "=");
+	}
+
+	@Override
+	public PortalStats getportalStats() {
+		PortalStats result = portalStatusDao.fetchPortalStats();
+		return result;
 	}
 
 }

@@ -14,6 +14,7 @@ import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
+import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMappingData;
 
@@ -48,5 +49,7 @@ public interface UtilityService {
 	public List<Tags> tagsAutoSugguest(String phrase);
 
 	public Language getLanguageByTwoLetterCode(String language);
+
+	public PortalStats getportalStats();
 
 }

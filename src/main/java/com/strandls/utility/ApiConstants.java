@@ -27,4 +27,5 @@ public class ApiConstants {
 	public static final String CREATE = "/create";
 	public static final String AUTOCOMPLETE = "/autocomplete";
 	public static final String TWOLETTERCODE = "/twoLetterCode";
+	public static final String PORTALSTATS = "/portalStats";
 }
