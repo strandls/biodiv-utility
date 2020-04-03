@@ -8,6 +8,7 @@ public class PortalStats {
 	private Long documents;
 	private Long userGroups;
 	private Long discussions;
+	private Long activeUser;
 
 	/**
 	 * 
@@ -23,8 +24,10 @@ public class PortalStats {
 	 * @param documents
 	 * @param userGroups
 	 * @param discussions
+	 * @param activeUser
 	 */
-	public PortalStats(Long species, Long observation, Long maps, Long documents, Long userGroups, Long discussions) {
+	public PortalStats(Long species, Long observation, Long maps, Long documents, Long userGroups, Long discussions,
+			Long activeUser) {
 		super();
 		this.species = species;
 		this.observation = observation;
@@ -32,6 +35,7 @@ public class PortalStats {
 		this.documents = documents;
 		this.userGroups = userGroups;
 		this.discussions = discussions;
+		this.activeUser = activeUser;
 	}
 
 	public Long getSpecies() {
@@ -80,6 +84,14 @@ public class PortalStats {
 
 	public void setDiscussions(Long discussions) {
 		this.discussions = discussions;
+	}
+
+	public Long getActiveUser() {
+		return activeUser;
+	}
+
+	public void setActiveUser(Long activeUser) {
+		this.activeUser = activeUser;
 	}
 
 }
