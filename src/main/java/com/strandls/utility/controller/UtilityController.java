@@ -175,14 +175,15 @@ public class UtilityController {
 			@ApiResponse(code = 406, message = "User is not allowed to unflag", response = String.class) })
 
 	public Response unFlag(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
-			@PathParam("objectId") String objectId, @PathParam("flagId") String fId,@ApiParam(name = "mailData") MailData mailData) {
+			@PathParam("objectId") String objectId, @PathParam("flagId") String fId,
+			@ApiParam(name = "mailData") MailData mailData) {
 		try {
 			CommonProfile profile = AuthUtil.getProfileFromRequest(request);
 
 			Long flagId = Long.parseLong(fId);
 			List<FlagShow> result = null;
 			Long objId = Long.parseLong(objectId);
-			result = utilityService.removeFlag(profile, objectType, objId, flagId,mailData);
+			result = utilityService.removeFlag(profile, objectType, objId, flagId, mailData);
 			return Response.status(Status.OK).entity(result).build();
 
 		} catch (Exception e) {
@@ -327,13 +328,13 @@ public class UtilityController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
-	
+
 	@GET
 	@Path(ApiConstants.PORTALSTATS)
 	@Produces(MediaType.APPLICATION_JSON)
-	
-	@ApiOperation(value = "Get portal statistics", notes = "Return the portal statistics",response = PortalStats.class)
-	@ApiResponses(value = {@ApiResponse(code = 400,message = "unable to fetch the data",response = String.class)})
+
+	@ApiOperation(value = "Get portal statistics", notes = "Return the portal statistics", response = PortalStats.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch the data", response = String.class) })
 	public Response getPortalstats() {
 		try {
 			PortalStats result = utilityService.getportalStats();
@@ -342,5 +343,22 @@ public class UtilityController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
-	
+
+	@GET
+	@Path(ApiConstants.YOUTUBE + "/{id}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+
+	@ApiOperation(value = "Get the youtube video title", notes = "Takes the youtube videoId and returns the title", response = String.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to get the title", response = String.class) })
+
+	public Response getYoutubeTitle(@PathParam("id") String videoId) {
+		try {
+			String result = utilityService.getYoutubeTitle(videoId);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
 }
