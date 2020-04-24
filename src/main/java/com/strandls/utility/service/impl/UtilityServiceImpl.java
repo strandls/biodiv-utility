@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -22,6 +23,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.strandls.activity.pojo.MailData;
@@ -350,6 +352,46 @@ public class UtilityServiceImpl implements UtilityService {
 	public PortalStats getportalStats() {
 		PortalStats result = portalStatusDao.fetchPortalStats();
 		return result;
+	}
+
+	@Override
+	public String getYoutubeTitle(String videoId) {
+
+		URIBuilder builder = new URIBuilder();
+		builder.setScheme("https").setHost("www.youtube.com").setPath("/oembed").setParameter("url",
+				"https://www.youtube.com/watch?v=" + videoId);
+
+		URI uri = null;
+		try {
+			uri = builder.build();
+			HttpGet request = new HttpGet(uri);
+
+			try (CloseableHttpResponse response = httpClient.execute(request)) {
+				System.out.println(response.getStatusLine().toString());
+
+				HttpEntity entity = response.getEntity();
+				Header headers = entity.getContentType();
+				System.out.println(headers);
+
+				if (entity != null) {
+					String result = EntityUtils.toString(entity);
+					Map<String, Object> resultMap = objectMapper.readValue(result,
+							new TypeReference<Map<String, Object>>() {
+							});
+
+					String title = resultMap.get("title").toString();
+					return title;
+				}
+
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+
+		} catch (URISyntaxException e1) {
+			logger.error(e1.getMessage());
+		}
+
+		return null;
 	}
 
 }

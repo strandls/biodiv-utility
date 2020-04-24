@@ -34,7 +34,7 @@ public interface UtilityService {
 
 	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagCreateData flagCreateData);
 
-	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,MailData mailData);
+	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId, MailData mailData);
 
 	public List<Tags> fetchTags(String objectType, Long id);
 
@@ -51,5 +51,7 @@ public interface UtilityService {
 	public Language getLanguageByTwoLetterCode(String language);
 
 	public PortalStats getportalStats();
+
+	public String getYoutubeTitle(String videoId);
 
 }
