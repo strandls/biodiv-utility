@@ -74,8 +74,8 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 				bind(SessionFactory.class).toInstance(sessionFactory);
 				bind(ActivitySerivceApi.class).in(Scopes.SINGLETON);
 				bind(UserServiceApi.class).in(Scopes.SINGLETON);
+				bind(Headers.class).in(Scopes.SINGLETON);
 				serve("/api/*").with(GuiceContainer.class, props);
-				filter("/*").through(SwaggerFilter.class);
 
 			}
 		}, new UtilityControllerModule(), new FilterModule(), new UtilityServiceModule(), new UtilityDaoModule());

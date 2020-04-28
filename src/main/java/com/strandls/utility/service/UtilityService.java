@@ -5,6 +5,8 @@ package com.strandls.utility.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.pac4j.core.profile.CommonProfile;
 
 import com.strandls.activity.pojo.MailData;
@@ -32,19 +34,22 @@ public interface UtilityService {
 
 	public List<Flag> fetchFlagByUserId(Long id);
 
-	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagCreateData flagCreateData);
+	public List<FlagShow> createFlag(HttpServletRequest request, String type, Long userId, Long objectId,
+			FlagCreateData flagCreateData);
 
-	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId, MailData mailData);
+	public List<FlagShow> removeFlag(HttpServletRequest request, CommonProfile profile, String type, Long objectId,
+			Long flagId, MailData mailData);
 
 	public List<Tags> fetchTags(String objectType, Long id);
 
-	public List<String> createTagsMapping(String objectType, TagsMappingData tagsMappingData);
+	public List<String> createTagsMapping(HttpServletRequest request, String objectType,
+			TagsMappingData tagsMappingData);
 
 	public ParsedName findParsedName(String scientificName);
 
 	public List<Language> findAllLanguages(Boolean isDirty);
 
-	public List<Tags> updateTags(String objectType, TagsMappingData tagsMappingData);
+	public List<Tags> updateTags(HttpServletRequest request, String objectType, TagsMappingData tagsMappingData);
 
 	public List<Tags> tagsAutoSugguest(String phrase);
 

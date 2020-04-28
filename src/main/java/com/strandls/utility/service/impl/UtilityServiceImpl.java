@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -121,7 +123,8 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<FlagShow> createFlag(String type, Long userId, Long objectId, FlagCreateData flagCreateData) {
+	public List<FlagShow> createFlag(HttpServletRequest request, String type, Long userId, Long objectId,
+			FlagCreateData flagCreateData) {
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
 
@@ -131,7 +134,7 @@ public class UtilityServiceImpl implements UtilityService {
 			flag = new Flag(null, 0L, userId, new Date(), flagIbp.getFlag(), flagIbp.getNotes(), objectId, type);
 			flag = flagDao.save(flag);
 			String description = flag.getFlag() + ":" + flag.getNotes();
-			logActivity.LogActivity(description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
+			logActivity.LogActivity(request, description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
 					flagCreateData.getMailData());
 
 			List<FlagShow> flagList = fetchByFlagObject(type, objectId);
@@ -143,8 +146,8 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<FlagShow> removeFlag(CommonProfile profile, String type, Long objectId, Long flagId,
-			MailData mailData) {
+	public List<FlagShow> removeFlag(HttpServletRequest request, CommonProfile profile, String type, Long objectId,
+			Long flagId, MailData mailData) {
 
 		if (type.equalsIgnoreCase("observation"))
 			type = "species.participation.Observation";
@@ -158,8 +161,8 @@ public class UtilityServiceImpl implements UtilityService {
 
 				flagDao.delete(flagged);
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
-				logActivity.LogActivity(description, objectId, objectId, "observaiton", flagged.getId(), "Flag removed",
-						mailData);
+				logActivity.LogActivity(request, description, objectId, objectId, "observaiton", flagged.getId(),
+						"Flag removed", mailData);
 
 				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 				return flagList;
@@ -179,7 +182,8 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<String> createTagsMapping(String objectType, TagsMappingData tagsMappingData) {
+	public List<String> createTagsMapping(HttpServletRequest request, String objectType,
+			TagsMappingData tagsMappingData) {
 
 		try {
 			TagsMapping tagsMapping = tagsMappingData.getTagsMapping();
@@ -222,8 +226,8 @@ public class UtilityServiceImpl implements UtilityService {
 			if (!(errorList.isEmpty()))
 				return errorList;
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(description, objectId, objectId, "observation", objectId, "Observation tag updated",
-					tagsMappingData.getMailData());
+			logActivity.LogActivity(request, description, objectId, objectId, "observation", objectId,
+					"Observation tag updated", tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -280,7 +284,7 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public List<Tags> updateTags(String objectType, TagsMappingData tagsMappingData) {
+	public List<Tags> updateTags(HttpServletRequest request, String objectType, TagsMappingData tagsMappingData) {
 		List<Tags> tags = new ArrayList<Tags>();
 
 		try {
@@ -321,8 +325,8 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(description, objectId, objectId, "observation", objectId, "Observation tag updated",
-					tagsMappingData.getMailData());
+			logActivity.LogActivity(request, description, objectId, objectId, "observation", objectId,
+					"Observation tag updated", tagsMappingData.getMailData());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

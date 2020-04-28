@@ -154,7 +154,7 @@ public class UtilityController {
 			CommonProfile Profile = AuthUtil.getProfileFromRequest(request);
 			Long userId = Long.parseLong(Profile.getId());
 			Long objId = Long.parseLong(objectId);
-			List<FlagShow> result = utilityService.createFlag(type, userId, objId, flagCreateData);
+			List<FlagShow> result = utilityService.createFlag(request, type, userId, objId, flagCreateData);
 			if (result.isEmpty())
 				return Response.status(Status.NOT_ACCEPTABLE).entity("User Allowed Flagged").build();
 			return Response.status(Status.OK).entity(result).build();
@@ -183,7 +183,7 @@ public class UtilityController {
 			Long flagId = Long.parseLong(fId);
 			List<FlagShow> result = null;
 			Long objId = Long.parseLong(objectId);
-			result = utilityService.removeFlag(profile, objectType, objId, flagId, mailData);
+			result = utilityService.removeFlag(request, profile, objectType, objId, flagId, mailData);
 			return Response.status(Status.OK).entity(result).build();
 
 		} catch (Exception e) {
@@ -242,7 +242,7 @@ public class UtilityController {
 	public Response createTags(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
 			@ApiParam(name = "tagsMappingData") TagsMappingData tagsMappingData) {
 		try {
-			List<String> result = utilityService.createTagsMapping(objectType, tagsMappingData);
+			List<String> result = utilityService.createTagsMapping(request, objectType, tagsMappingData);
 			if (result == null)
 				return Response.status(Status.CONFLICT).entity("Error occured in transaction").build();
 			else {
@@ -268,7 +268,7 @@ public class UtilityController {
 	public Response updateTags(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
 			@ApiParam(name = "tagsMappingData") TagsMappingData tagsMappingData) {
 		try {
-			List<Tags> result = utilityService.updateTags(objectType, tagsMappingData);
+			List<Tags> result = utilityService.updateTags(request, objectType, tagsMappingData);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
