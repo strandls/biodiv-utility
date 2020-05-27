@@ -5,6 +5,7 @@ package com.strandls.utility.controller;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,8 +22,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.pac4j.core.profile.CommonProfile;
 
-import javax.inject.Inject;
-
 import com.strandls.activity.pojo.MailData;
 import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.authentication_utility.util.AuthUtil;
@@ -31,6 +30,7 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.Habitat;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.PortalStats;
@@ -357,6 +357,23 @@ public class UtilityController {
 		try {
 			String result = utilityService.getYoutubeTitle(videoId);
 			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path(ApiConstants.HABITAT + ApiConstants.ALL)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Get all the Habitat", notes = "Returns all the habitat in habitat order", response = Habitat.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to get the habitat", response = String.class) })
+
+	public Response getAllHabitat() {
+		try {
+			List<Habitat> result = utilityService.fetchAllHabitat();
+			return Response.status(Status.OK).entity(result).build();
+
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}

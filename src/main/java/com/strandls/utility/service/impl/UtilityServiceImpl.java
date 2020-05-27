@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 
@@ -28,11 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.inject.Inject;
-
 import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.utility.dao.FlagDao;
+import com.strandls.utility.dao.HabitatDao;
 import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.PortalStatsDao;
 import com.strandls.utility.dao.TagLinksDao;
@@ -41,6 +41,7 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.Habitat;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.PortalStats;
@@ -85,6 +86,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private PortalStatsDao portalStatusDao;
+
+	@Inject
+	private HabitatDao habitatDao;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -136,8 +140,8 @@ public class UtilityServiceImpl implements UtilityService {
 			flag = new Flag(null, 0L, userId, new Date(), flagIbp.getFlag(), flagIbp.getNotes(), objectId, type);
 			flag = flagDao.save(flag);
 			String description = flag.getFlag() + ":" + flag.getNotes();
-			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
-					flagCreateData.getMailData());
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+					"observaiton", flag.getId(), "Flagged", flagCreateData.getMailData());
 
 			List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 			return flagList;
@@ -163,8 +167,8 @@ public class UtilityServiceImpl implements UtilityService {
 
 				flagDao.delete(flagged);
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
-				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observaiton", flagged.getId(),
-						"Flag removed", mailData);
+				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+						"observaiton", flagged.getId(), "Flag removed", mailData);
 
 				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 				return flagList;
@@ -228,8 +232,8 @@ public class UtilityServiceImpl implements UtilityService {
 			if (!(errorList.isEmpty()))
 				return errorList;
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observation", objectId,
-					"Observation tag updated", tagsMappingData.getMailData());
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+					"observation", objectId, "Observation tag updated", tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -327,8 +331,8 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observation", objectId,
-					"Observation tag updated", tagsMappingData.getMailData());
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+					"observation", objectId, "Observation tag updated", tagsMappingData.getMailData());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -398,6 +402,12 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<Habitat> fetchAllHabitat() {
+		List<Habitat> result = habitatDao.findAllHabitat();
+		return result;
 	}
 
 }

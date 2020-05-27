@@ -29,4 +29,6 @@ public class ApiConstants {
 	public static final String TWOLETTERCODE = "/twoLetterCode";
 	public static final String PORTALSTATS = "/portalStats";
 	public static final String YOUTUBE = "/youtube";
+	public static final String HABITAT = "/habitat";
+	public static final String ALL = "/all";
 }

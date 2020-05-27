@@ -14,6 +14,7 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.Habitat;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.PortalStats;
@@ -58,5 +59,7 @@ public interface UtilityService {
 	public PortalStats getportalStats();
 
 	public String getYoutubeTitle(String videoId);
+
+	public List<Habitat> fetchAllHabitat();
 
 }
