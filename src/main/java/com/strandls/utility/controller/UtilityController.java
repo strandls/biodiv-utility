@@ -30,10 +30,12 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.GallerySlider;
 import com.strandls.utility.pojo.Habitat;
+import com.strandls.utility.pojo.HomePageData;
+import com.strandls.utility.pojo.HomePageStats;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
-import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMappingData;
 import com.strandls.utility.service.UtilityService;
@@ -331,17 +333,35 @@ public class UtilityController {
 	}
 
 	@GET
-	@Path(ApiConstants.PORTALSTATS)
+	@Path(ApiConstants.HOMEPAGE)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Get portal statistics", notes = "Return the portal statistics", response = PortalStats.class)
+	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageStats.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch the data", response = String.class) })
-	public Response getPortalstats() {
+	public Response getHomePageData(@QueryParam("userGroupId") String groupId) {
 		try {
-			PortalStats result = utilityService.getportalStats();
+			Long userGroupId = null;
+			if (groupId != null) {
+				userGroupId = Long.parseLong(groupId);
+			}
+			HomePageData result = utilityService.getHomePageData(userGroupId);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.INSERT + ApiConstants.HOMEPAGE)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	public Response insertHomePageData(@ApiParam(name = "galleryData") GallerySlider galleryData) {
+		try {
+			Boolean result = utilityService.insertGallery(galleryData);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
 

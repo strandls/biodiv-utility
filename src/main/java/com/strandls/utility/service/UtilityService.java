@@ -14,10 +14,11 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.GallerySlider;
 import com.strandls.utility.pojo.Habitat;
+import com.strandls.utility.pojo.HomePageData;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
-import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMappingData;
 
@@ -56,10 +57,12 @@ public interface UtilityService {
 
 	public Language getLanguageByTwoLetterCode(String language);
 
-	public PortalStats getportalStats();
+	public HomePageData getHomePageData(Long userGroupId);
 
 	public String getYoutubeTitle(String videoId);
 
 	public List<Habitat> fetchAllHabitat();
+
+	public Boolean insertGallery(GallerySlider gallery);
 
 }

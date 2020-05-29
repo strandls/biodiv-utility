@@ -31,20 +31,25 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
+import com.strandls.userGroup.controller.UserGroupSerivceApi;
+import com.strandls.userGroup.pojo.UserGroupHomePage;
 import com.strandls.utility.dao.FlagDao;
+import com.strandls.utility.dao.GallerySliderDao;
 import com.strandls.utility.dao.HabitatDao;
+import com.strandls.utility.dao.HomePageStatsDao;
 import com.strandls.utility.dao.LanguageDao;
-import com.strandls.utility.dao.PortalStatsDao;
 import com.strandls.utility.dao.TagLinksDao;
 import com.strandls.utility.dao.TagsDao;
 import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.GallerySlider;
 import com.strandls.utility.pojo.Habitat;
+import com.strandls.utility.pojo.HomePageData;
+import com.strandls.utility.pojo.HomePageStats;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
-import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.TagLinks;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMapping;
@@ -85,7 +90,13 @@ public class UtilityServiceImpl implements UtilityService {
 	private LanguageDao languageDao;
 
 	@Inject
-	private PortalStatsDao portalStatusDao;
+	private HomePageStatsDao portalStatusDao;
+
+	@Inject
+	private UserGroupSerivceApi ugService;
+
+	@Inject
+	private GallerySliderDao gallerSilderDao;
 
 	@Inject
 	private HabitatDao habitatDao;
@@ -359,9 +370,39 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public PortalStats getportalStats() {
-		PortalStats result = portalStatusDao.fetchPortalStats();
-		return result;
+	public HomePageData getHomePageData(Long userGroupId) {
+		try {
+
+			HomePageData result = null;
+			List<GallerySlider> galleryData = gallerSilderDao.getAllGallerySliderInfo(userGroupId);
+
+			for (GallerySlider gallery : galleryData) {
+				gallery.setAuthorImage(userService.getUserIbp(gallery.getAuthorId().toString()).getProfilePic());
+			}
+
+			HomePageStats homePageStats;
+			if (userGroupId == null) {
+//				IBP home page DATA
+				homePageStats = portalStatusDao.fetchPortalStats();
+				result = new HomePageData(true, true, true, true, true, homePageStats, galleryData);
+			} else {
+//				Group Home Page
+				UserGroupHomePage ugHomePageData = ugService.getUserGroupHomePageData(userGroupId.toString());
+				homePageStats = new HomePageStats(ugHomePageData.getStats().getSpecies(),
+						ugHomePageData.getStats().getObservation(), ugHomePageData.getStats().getMaps(),
+						ugHomePageData.getStats().getDocuments(), ugHomePageData.getStats().getDiscussions(),
+						ugHomePageData.getStats().getActiveUser());
+				result = new HomePageData(ugHomePageData.getShowGallery(), ugHomePageData.getShowStats(),
+						ugHomePageData.getShowRecentObservation(), ugHomePageData.getShowGridMap(),
+						ugHomePageData.getShowPartners(), homePageStats, galleryData);
+			}
+
+			return result;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
+
 	}
 
 	@Override
@@ -408,6 +449,20 @@ public class UtilityServiceImpl implements UtilityService {
 	public List<Habitat> fetchAllHabitat() {
 		List<Habitat> result = habitatDao.findAllHabitat();
 		return result;
+	}
+
+	@Override
+	public Boolean insertGallery(GallerySlider gallery) {
+		try {
+			gallery = gallerSilderDao.save(gallery);
+			if (gallery.getId() != null)
+				return true;
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
+		return false;
 	}
 
 }
