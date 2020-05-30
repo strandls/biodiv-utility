@@ -5,6 +5,7 @@ package com.strandls.utility.controller;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,8 +22,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.pac4j.core.profile.CommonProfile;
 
-import javax.inject.Inject;
-
 import com.strandls.activity.pojo.MailData;
 import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.authentication_utility.util.AuthUtil;
@@ -31,9 +30,10 @@ import com.strandls.utility.pojo.Flag;
 import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
+import com.strandls.utility.pojo.GallerySlider;
+import com.strandls.utility.pojo.HomePageData;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
-import com.strandls.utility.pojo.PortalStats;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMappingData;
 import com.strandls.utility.service.UtilityService;
@@ -331,17 +331,35 @@ public class UtilityController {
 	}
 
 	@GET
-	@Path(ApiConstants.PORTALSTATS)
+	@Path(ApiConstants.HOMEPAGE)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Get portal statistics", notes = "Return the portal statistics", response = PortalStats.class)
+	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageData.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch the data", response = String.class) })
-	public Response getPortalstats() {
+	public Response getHomePageData(@QueryParam("userGroupId") String groupId) {
 		try {
-			PortalStats result = utilityService.getportalStats();
+			Long userGroupId = null;
+			if (groupId != null) {
+				userGroupId = Long.parseLong(groupId);
+			}
+			HomePageData result = utilityService.getHomePageData(userGroupId);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.INSERT + ApiConstants.HOMEPAGE)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	public Response insertHomePageData(@ApiParam(name = "galleryData") GallerySlider galleryData) {
+		try {
+			Boolean result = utilityService.insertGallery(galleryData);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
 
