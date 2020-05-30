@@ -335,7 +335,7 @@ public class UtilityController {
 	@Path(ApiConstants.HOMEPAGE)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageStats.class)
+	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageData.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch the data", response = String.class) })
 	public Response getHomePageData(@QueryParam("userGroupId") String groupId) {
 		try {
