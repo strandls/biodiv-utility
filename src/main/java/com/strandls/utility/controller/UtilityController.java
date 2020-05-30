@@ -33,7 +33,6 @@ import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.GallerySlider;
 import com.strandls.utility.pojo.Habitat;
 import com.strandls.utility.pojo.HomePageData;
-import com.strandls.utility.pojo.HomePageStats;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
 import com.strandls.utility.pojo.Tags;
@@ -336,7 +335,7 @@ public class UtilityController {
 	@Path(ApiConstants.HOMEPAGE)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageStats.class)
+	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageData.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch the data", response = String.class) })
 	public Response getHomePageData(@QueryParam("userGroupId") String groupId) {
 		try {
