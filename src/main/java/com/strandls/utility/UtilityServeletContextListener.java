@@ -30,6 +30,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.strandls.activity.controller.ActivitySerivceApi;
 import com.strandls.authentication_utility.filter.FilterModule;
+import com.strandls.resource.controllers.ResourceServicesApi;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.userGroup.controller.UserGroupSerivceApi;
 import com.strandls.utility.controller.UtilityControllerModule;
@@ -79,6 +80,7 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 				bind(Headers.class).in(Scopes.SINGLETON);
 				bind(ServletContainer.class).in(Scopes.SINGLETON);
 				bind(UserGroupSerivceApi.class).in(Scopes.SINGLETON);
+				bind(ResourceServicesApi.class).in(Scopes.SINGLETON);
 				serve("/api/*").with(ServletContainer.class, props);
 
 			}

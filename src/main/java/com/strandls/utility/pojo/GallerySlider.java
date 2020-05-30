@@ -33,6 +33,38 @@ public class GallerySlider {
 	private String customDescripition;
 	private String moreLinks;
 
+	/**
+	 * 
+	 */
+	public GallerySlider() {
+		super();
+	}
+
+	/**
+	 * @param id
+	 * @param ugId
+	 * @param fileName
+	 * @param observationId
+	 * @param authorId
+	 * @param authorImage
+	 * @param title
+	 * @param customDescripition
+	 * @param moreLinks
+	 */
+	public GallerySlider(Long id, Long ugId, String fileName, Long observationId, Long authorId, String authorImage,
+			String title, String customDescripition, String moreLinks) {
+		super();
+		this.id = id;
+		this.ugId = ugId;
+		this.fileName = fileName;
+		this.observationId = observationId;
+		this.authorId = authorId;
+		this.authorImage = authorImage;
+		this.title = title;
+		this.customDescripition = customDescripition;
+		this.moreLinks = moreLinks;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -98,7 +130,7 @@ public class GallerySlider {
 		this.title = title;
 	}
 
-	@Column(name = "custom_desc")
+	@Column(name = "custom_desc", columnDefinition = "TEXT")
 	public String getCustomDescripition() {
 		return customDescripition;
 	}

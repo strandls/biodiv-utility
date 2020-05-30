@@ -64,5 +64,7 @@ public interface UtilityService {
 	public List<Habitat> fetchAllHabitat();
 
 	public Boolean insertGallery(GallerySlider gallery);
+	
+	public void readeCSV();
 
 }

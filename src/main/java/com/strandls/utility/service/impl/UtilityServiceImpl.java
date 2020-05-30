@@ -3,6 +3,8 @@
  */
 package com.strandls.utility.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -23,6 +25,10 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strandls.activity.pojo.MailData;
+import com.strandls.resource.controllers.ResourceServicesApi;
+import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.userGroup.controller.UserGroupSerivceApi;
 import com.strandls.userGroup.pojo.UserGroupHomePage;
@@ -100,6 +108,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private HabitatDao habitatDao;
+
+	@Inject
+	private ResourceServicesApi resourceService;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -463,6 +474,71 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 
 		return false;
+	}
+
+	@Override
+	public void readeCSV() {
+		try {
+			String file = "/Users/abhishek/Downloads/user_group-csv.xlsx";
+
+			File excel = new File(file);
+			FileInputStream fis = new FileInputStream(excel);
+			XSSFWorkbook book = new XSSFWorkbook(fis);
+			XSSFSheet sheet = book.getSheetAt(0);
+
+			int first = sheet.getFirstRowNum();
+			int last = sheet.getLastRowNum();
+
+			for (int i = first + 1; i < last; i++) {
+				Row row = sheet.getRow(i);
+				Long ugId = null;
+				String customDescripition = "";
+				String moreLinks = "";
+
+				Cell cdCell = row.getCell(4, Row.RETURN_BLANK_AS_NULL);
+				if (cdCell != null)
+					customDescripition = cdCell.getStringCellValue();
+
+				Cell moreLinkCell = row.getCell(5, Row.RETURN_BLANK_AS_NULL);
+				if (moreLinkCell != null)
+					moreLinks = moreLinkCell.getStringCellValue();
+
+				Cell idCell = row.getCell(0, Row.RETURN_BLANK_AS_NULL);
+				if (idCell != null) {
+					ugId = Long.parseLong(idCell.getStringCellValue());
+					if (customDescripition.length() == 0) {
+						customDescripition = gallerSilderDao.getDesc(ugId);
+						customDescripition = customDescripition.replace("&nbsp;", " ");
+					}
+				}
+				Long observationCell = (long) row.getCell(6).getNumericCellValue();
+
+				String fileName = "";
+				Map<String, Long> observation = gallerSilderDao.getObservation(observationCell);
+				if (observation == null || observation.isEmpty())
+					continue;
+				List<ObservationResourceUser> resourceList = resourceService
+						.getImageResource(observationCell.toString());
+				for (ObservationResourceUser resource : resourceList) {
+					if (observation.get("reprImage").equals(resource.getResource().getId()))
+						fileName = resource.getResource().getFileName();
+				}
+				System.out.println("UGID :" + ugId + "       observation: " + observationCell);
+				String title = row.getCell(3).getStringCellValue();
+				GallerySlider gallerySlider = new GallerySlider(null, ugId, fileName, observationCell,
+						observation.get("authorId"), null, title, customDescripition, moreLinks);
+				gallerSilderDao.save(gallerySlider);
+			}
+
+			book.close();
+			System.out.println("COMPLETED");
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+
+		}
+
 	}
 
 }

@@ -3,7 +3,9 @@
  */
 package com.strandls.utility.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -60,6 +62,43 @@ public class GallerySliderDao extends AbstractDAO<GallerySlider, Long> {
 			if (userGroupId != null)
 				query.setParameter("ugId", userGroupId);
 			result = query.getResultList();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getDesc(Long userGroupId) {
+		String qry = "select strip_tags(description) from user_group where id = " + userGroupId;
+		Session session = sessionFactory.openSession();
+		String desc = "";
+		try {
+			Query<String> query = session.createNativeQuery(qry);
+			desc = query.getSingleResult();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return desc;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Long> getObservation(Long observationId) {
+		String qry = "SELECT author_id, repr_image_id FROM public.observation where id = " + observationId;
+		Session session = sessionFactory.openSession();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Object[] list = null;
+		try {
+			Query<Object[]> query = session.createNativeQuery(qry);
+			list = query.getSingleResult();
+			if (list != null) {
+				result.put("authorId", Long.parseLong(list[0].toString()));
+				result.put("reprImage", Long.parseLong(list[1].toString()));
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		} finally {

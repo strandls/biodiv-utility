@@ -32,4 +32,5 @@ public class ApiConstants {
 	public static final String HABITAT = "/habitat";
 	public static final String ALL = "/all";
 	public static final String INSERT = "/insert";
+	public static final String CSV = "/csv";
 }

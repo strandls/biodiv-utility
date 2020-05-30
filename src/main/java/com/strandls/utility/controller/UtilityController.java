@@ -399,4 +399,13 @@ public class UtilityController {
 		}
 	}
 
+	@GET
+	@Path(ApiConstants.CSV)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	public Response getCsv() {
+		utilityService.readeCSV();
+		return Response.status(Status.OK).build();
+	}
+
 }
