@@ -28,6 +28,7 @@ public class GallerySlider {
 	private String fileName;
 	private Long observationId;
 	private Long authorId;
+	private String authorName;
 	private String authorImage;
 	private String title;
 	private String customDescripition;
@@ -78,6 +79,15 @@ public class GallerySlider {
 
 	public void setAuthorId(Long authorId) {
 		this.authorId = authorId;
+	}
+
+	@Transient
+	public String getAuthorName() {
+		return authorName;
+	}
+
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
 	}
 
 	@Transient
