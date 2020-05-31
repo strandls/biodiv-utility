@@ -34,7 +34,6 @@ import com.strandls.utility.pojo.GallerySlider;
 import com.strandls.utility.pojo.HomePageData;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
-import com.strandls.utility.pojo.HomePageStats;
 import com.strandls.utility.pojo.Tags;
 import com.strandls.utility.pojo.TagsMappingData;
 import com.strandls.utility.service.UtilityService;

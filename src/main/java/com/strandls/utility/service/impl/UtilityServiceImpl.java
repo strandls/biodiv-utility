@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
+import com.strandls.user.pojo.UserIbp;
 import com.strandls.userGroup.controller.UserGroupSerivceApi;
 import com.strandls.userGroup.pojo.UserGroupHomePage;
 import com.strandls.utility.dao.FlagDao;
@@ -371,7 +372,9 @@ public class UtilityServiceImpl implements UtilityService {
 			List<GallerySlider> galleryData = gallerSilderDao.getAllGallerySliderInfo(userGroupId);
 
 			for (GallerySlider gallery : galleryData) {
-				gallery.setAuthorImage(userService.getUserIbp(gallery.getAuthorId().toString()).getProfilePic());
+				UserIbp userIbp = userService.getUserIbp(gallery.getAuthorId().toString());
+				gallery.setAuthorImage(userIbp.getProfilePic());
+				gallery.setAuthorName(userIbp.getName());
 			}
 
 			HomePageStats homePageStats;
