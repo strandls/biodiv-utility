@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -27,7 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
+import javax.inject.Inject;
+
 import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.user.pojo.UserIbp;
@@ -146,7 +148,7 @@ public class UtilityServiceImpl implements UtilityService {
 			flag = new Flag(null, 0L, userId, new Date(), flagIbp.getFlag(), flagIbp.getNotes(), objectId, type);
 			flag = flagDao.save(flag);
 			String description = flag.getFlag() + ":" + flag.getNotes();
-			logActivity.LogActivity(request, description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
 					flagCreateData.getMailData());
 
 			List<FlagShow> flagList = fetchByFlagObject(type, objectId);
@@ -173,7 +175,7 @@ public class UtilityServiceImpl implements UtilityService {
 
 				flagDao.delete(flagged);
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
-				logActivity.LogActivity(request, description, objectId, objectId, "observaiton", flagged.getId(),
+				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observaiton", flagged.getId(),
 						"Flag removed", mailData);
 
 				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
@@ -238,7 +240,7 @@ public class UtilityServiceImpl implements UtilityService {
 			if (!(errorList.isEmpty()))
 				return errorList;
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(request, description, objectId, objectId, "observation", objectId,
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observation", objectId,
 					"Observation tag updated", tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
@@ -337,7 +339,7 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(request, description, objectId, objectId, "observation", objectId,
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observation", objectId,
 					"Observation tag updated", tagsMappingData.getMailData());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
