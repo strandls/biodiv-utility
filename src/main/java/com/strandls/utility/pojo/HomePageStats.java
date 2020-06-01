@@ -1,19 +1,18 @@
 package com.strandls.utility.pojo;
 
-public class PortalStats {
+public class HomePageStats {
 
 	private Long species;
 	private Long observation;
 	private Long maps;
 	private Long documents;
-	private Long userGroups;
 	private Long discussions;
 	private Long activeUser;
 
 	/**
 	 * 
 	 */
-	public PortalStats() {
+	public HomePageStats() {
 		super();
 	}
 
@@ -22,18 +21,15 @@ public class PortalStats {
 	 * @param observation
 	 * @param maps
 	 * @param documents
-	 * @param userGroups
 	 * @param discussions
 	 * @param activeUser
 	 */
-	public PortalStats(Long species, Long observation, Long maps, Long documents, Long userGroups, Long discussions,
-			Long activeUser) {
+	public HomePageStats(Long species, Long observation, Long maps, Long documents, Long discussions, Long activeUser) {
 		super();
 		this.species = species;
 		this.observation = observation;
 		this.maps = maps;
 		this.documents = documents;
-		this.userGroups = userGroups;
 		this.discussions = discussions;
 		this.activeUser = activeUser;
 	}
@@ -68,14 +64,6 @@ public class PortalStats {
 
 	public void setDocuments(Long documents) {
 		this.documents = documents;
-	}
-
-	public Long getUserGroups() {
-		return userGroups;
-	}
-
-	public void setUserGroups(Long userGroups) {
-		this.userGroups = userGroups;
 	}
 
 	public Long getDiscussions() {
