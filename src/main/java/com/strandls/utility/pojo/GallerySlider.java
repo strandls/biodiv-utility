@@ -108,7 +108,7 @@ public class GallerySlider {
 		this.title = title;
 	}
 
-	@Column(name = "custom_desc")
+	@Column(name = "custom_desc", columnDefinition = "TEXT")
 	public String getCustomDescripition() {
 		return customDescripition;
 	}
