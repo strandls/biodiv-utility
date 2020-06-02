@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 
@@ -28,12 +29,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.inject.Inject;
-
 import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.user.pojo.UserIbp;
 import com.strandls.userGroup.controller.UserGroupSerivceApi;
+import com.strandls.userGroup.pojo.UserGroup;
 import com.strandls.userGroup.pojo.UserGroupHomePage;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.GallerySliderDao;
@@ -148,8 +148,8 @@ public class UtilityServiceImpl implements UtilityService {
 			flag = new Flag(null, 0L, userId, new Date(), flagIbp.getFlag(), flagIbp.getNotes(), objectId, type);
 			flag = flagDao.save(flag);
 			String description = flag.getFlag() + ":" + flag.getNotes();
-			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observaiton", flag.getId(), "Flagged",
-					flagCreateData.getMailData());
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+					"observaiton", flag.getId(), "Flagged", flagCreateData.getMailData());
 
 			List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 			return flagList;
@@ -175,8 +175,8 @@ public class UtilityServiceImpl implements UtilityService {
 
 				flagDao.delete(flagged);
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
-				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observaiton", flagged.getId(),
-						"Flag removed", mailData);
+				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+						"observaiton", flagged.getId(), "Flag removed", mailData);
 
 				List<FlagShow> flagList = fetchByFlagObject(type, objectId);
 				return flagList;
@@ -240,8 +240,8 @@ public class UtilityServiceImpl implements UtilityService {
 			if (!(errorList.isEmpty()))
 				return errorList;
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observation", objectId,
-					"Observation tag updated", tagsMappingData.getMailData());
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+					"observation", objectId, "Observation tag updated", tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -339,8 +339,8 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 
 			description = description.substring(0, description.length() - 1);
-			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId, "observation", objectId,
-					"Observation tag updated", tagsMappingData.getMailData());
+			logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+					"observation", objectId, "Observation tag updated", tagsMappingData.getMailData());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -383,9 +383,13 @@ public class UtilityServiceImpl implements UtilityService {
 			if (userGroupId == null) {
 //				IBP home page DATA
 				homePageStats = portalStatusDao.fetchPortalStats();
-				result = new HomePageData(true, true, true, true, true, homePageStats, galleryData);
+				result = new HomePageData(true, true, true, true, true, homePageStats, galleryData, null);
 			} else {
 //				Group Home Page
+				UserGroup userGroup = ugService.getUserGroup(userGroupId.toString());
+				String desc = null;
+				if (userGroup.getShowDesc())
+					desc = userGroup.getDescription();
 				UserGroupHomePage ugHomePageData = ugService.getUserGroupHomePageData(userGroupId.toString());
 				homePageStats = new HomePageStats(ugHomePageData.getStats().getSpecies(),
 						ugHomePageData.getStats().getObservation(), ugHomePageData.getStats().getMaps(),
@@ -393,7 +397,7 @@ public class UtilityServiceImpl implements UtilityService {
 						ugHomePageData.getStats().getActiveUser());
 				result = new HomePageData(ugHomePageData.getShowGallery(), ugHomePageData.getShowStats(),
 						ugHomePageData.getShowRecentObservation(), ugHomePageData.getShowGridMap(),
-						ugHomePageData.getShowPartners(), homePageStats, galleryData);
+						ugHomePageData.getShowPartners(), homePageStats, galleryData, desc);
 			}
 
 			return result;

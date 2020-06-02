@@ -18,6 +18,7 @@ public class HomePageData {
 	private Boolean showPartners;
 	private HomePageStats stats;
 	private List<GallerySlider> gallerySlider;
+	private String ugDescription;
 
 	/**
 	 * 
@@ -34,9 +35,10 @@ public class HomePageData {
 	 * @param showPartners
 	 * @param stats
 	 * @param gallerySlider
+	 * @param ugDescription
 	 */
 	public HomePageData(Boolean showGallery, Boolean showStats, Boolean showRecentObs, Boolean showGridMap,
-			Boolean showPartners, HomePageStats stats, List<GallerySlider> gallerySlider) {
+			Boolean showPartners, HomePageStats stats, List<GallerySlider> gallerySlider, String ugDescription) {
 		super();
 		this.showGallery = showGallery;
 		this.showStats = showStats;
@@ -45,6 +47,7 @@ public class HomePageData {
 		this.showPartners = showPartners;
 		this.stats = stats;
 		this.gallerySlider = gallerySlider;
+		this.ugDescription = ugDescription;
 	}
 
 	public Boolean getShowGallery() {
@@ -101,6 +104,14 @@ public class HomePageData {
 
 	public void setGallerySlider(List<GallerySlider> gallerySlider) {
 		this.gallerySlider = gallerySlider;
+	}
+
+	public String getUgDescription() {
+		return ugDescription;
+	}
+
+	public void setUgDescription(String ugDescription) {
+		this.ugDescription = ugDescription;
 	}
 
 }
