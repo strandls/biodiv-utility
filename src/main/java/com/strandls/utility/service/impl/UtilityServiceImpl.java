@@ -37,6 +37,7 @@ import com.strandls.userGroup.pojo.UserGroup;
 import com.strandls.userGroup.pojo.UserGroupHomePage;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.GallerySliderDao;
+import com.strandls.utility.dao.HabitatDao;
 import com.strandls.utility.dao.HomePageStatsDao;
 import com.strandls.utility.dao.LanguageDao;
 import com.strandls.utility.dao.TagLinksDao;
@@ -46,6 +47,7 @@ import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.GallerySlider;
+import com.strandls.utility.pojo.Habitat;
 import com.strandls.utility.pojo.HomePageData;
 import com.strandls.utility.pojo.HomePageStats;
 import com.strandls.utility.pojo.Language;
@@ -97,6 +99,9 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private GallerySliderDao gallerSilderDao;
+
+	@Inject
+	private HabitatDao habitatDao;
 
 	@Override
 	public Flag fetchByFlagId(Long id) {
@@ -446,6 +451,12 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<Habitat> fetchAllHabitat() {
+		List<Habitat> result = habitatDao.findAllHabitat();
+		return result;
 	}
 
 	@Override

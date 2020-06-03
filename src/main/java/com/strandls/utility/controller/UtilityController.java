@@ -31,6 +31,7 @@ import com.strandls.utility.pojo.FlagCreateData;
 import com.strandls.utility.pojo.FlagIbp;
 import com.strandls.utility.pojo.FlagShow;
 import com.strandls.utility.pojo.GallerySlider;
+import com.strandls.utility.pojo.Habitat;
 import com.strandls.utility.pojo.HomePageData;
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.pojo.ParsedName;
@@ -375,6 +376,23 @@ public class UtilityController {
 		try {
 			String result = utilityService.getYoutubeTitle(videoId);
 			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path(ApiConstants.HABITAT + ApiConstants.ALL)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Get all the Habitat", notes = "Returns all the habitat in habitat order", response = Habitat.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to get the habitat", response = String.class) })
+
+	public Response getAllHabitat() {
+		try {
+			List<Habitat> result = utilityService.fetchAllHabitat();
+			return Response.status(Status.OK).entity(result).build();
+
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
