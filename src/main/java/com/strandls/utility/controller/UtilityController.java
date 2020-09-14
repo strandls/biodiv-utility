@@ -337,13 +337,9 @@ public class UtilityController {
 
 	@ApiOperation(value = "Get home page data", notes = "Return home page data", response = HomePageData.class)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch the data", response = String.class) })
-	public Response getHomePageData(@QueryParam("userGroupId") String groupId) {
+	public Response getHomePageData() {
 		try {
-			Long userGroupId = null;
-			if (groupId != null) {
-				userGroupId = Long.parseLong(groupId);
-			}
-			HomePageData result = utilityService.getHomePageData(userGroupId);
+			HomePageData result = utilityService.getHomePageData();
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();

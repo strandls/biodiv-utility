@@ -46,19 +46,12 @@ public class GallerySliderDao extends AbstractDAO<GallerySlider, Long> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<GallerySlider> getAllGallerySliderInfo(Long userGroupId) {
+	public List<GallerySlider> getAllGallerySliderInfo() {
 		List<GallerySlider> result = null;
-		String qry = "";
-		if (userGroupId != null) {
-			qry = "from  GallerySlider where ugId = :ugId";
-		} else {
-			qry = "from  GallerySlider where ugId is NULL";
-		}
+		String qry = "from  GallerySlider where ugId is NULL";
 		Session session = sessionFactory.openSession();
 		try {
 			Query<GallerySlider> query = session.createQuery(qry);
-			if (userGroupId != null)
-				query.setParameter("ugId", userGroupId);
 			result = query.getResultList();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
