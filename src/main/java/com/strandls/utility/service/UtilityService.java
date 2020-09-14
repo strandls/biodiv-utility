@@ -57,7 +57,7 @@ public interface UtilityService {
 
 	public Language getLanguageByTwoLetterCode(String language);
 
-	public HomePageData getHomePageData(Long userGroupId);
+	public HomePageData getHomePageData();
 
 	public String getYoutubeTitle(String videoId);
 
