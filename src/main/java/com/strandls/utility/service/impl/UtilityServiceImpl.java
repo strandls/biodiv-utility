@@ -97,9 +97,6 @@ public class UtilityServiceImpl implements UtilityService {
 	@Inject
 	private HabitatDao habitatDao;
 
-	@Inject
-	private HabitatDao habitatDao;
-
 	@Override
 	public Flag fetchByFlagId(Long id) {
 		Flag flag = flagDao.findById(id);
