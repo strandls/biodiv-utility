@@ -13,7 +13,7 @@ public class HomePageData {
 
 	private Boolean showGallery;
 	private Boolean showStats;
-	private Boolean showRecentObs;
+	private Boolean showRecentObservation;
 	private Boolean showGridMap;
 	private Boolean showPartners;
 	private HomePageStats stats;
@@ -30,19 +30,19 @@ public class HomePageData {
 	/**
 	 * @param showGallery
 	 * @param showStats
-	 * @param showRecentObs
+	 * @param showRecentObservation
 	 * @param showGridMap
 	 * @param showPartners
 	 * @param stats
 	 * @param gallerySlider
 	 * @param ugDescription
 	 */
-	public HomePageData(Boolean showGallery, Boolean showStats, Boolean showRecentObs, Boolean showGridMap,
+	public HomePageData(Boolean showGallery, Boolean showStats, Boolean showRecentObservation, Boolean showGridMap,
 			Boolean showPartners, HomePageStats stats, List<GallerySlider> gallerySlider, String ugDescription) {
 		super();
 		this.showGallery = showGallery;
 		this.showStats = showStats;
-		this.showRecentObs = showRecentObs;
+		this.showRecentObservation = showRecentObservation;
 		this.showGridMap = showGridMap;
 		this.showPartners = showPartners;
 		this.stats = stats;
@@ -66,12 +66,12 @@ public class HomePageData {
 		this.showStats = showStats;
 	}
 
-	public Boolean getShowRecentObs() {
-		return showRecentObs;
+	public Boolean getShowRecentObservation() {
+		return showRecentObservation;
 	}
 
-	public void setShowRecentObs(Boolean showRecentObs) {
-		this.showRecentObs = showRecentObs;
+	public void setShowRecentObservation(Boolean showRecentObservation) {
+		this.showRecentObservation = showRecentObservation;
 	}
 
 	public Boolean getShowGridMap() {
