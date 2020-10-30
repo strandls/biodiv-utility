@@ -32,9 +32,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strandls.activity.pojo.MailData;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.user.pojo.UserIbp;
-import com.strandls.userGroup.controller.UserGroupSerivceApi;
-import com.strandls.userGroup.pojo.UserGroup;
-import com.strandls.userGroup.pojo.UserGroupHomePage;
 import com.strandls.utility.dao.FlagDao;
 import com.strandls.utility.dao.GallerySliderDao;
 import com.strandls.utility.dao.HabitatDao;
@@ -93,9 +90,6 @@ public class UtilityServiceImpl implements UtilityService {
 
 	@Inject
 	private HomePageStatsDao portalStatusDao;
-
-	@Inject
-	private UserGroupSerivceApi ugService;
 
 	@Inject
 	private GallerySliderDao gallerSilderDao;
@@ -372,11 +366,11 @@ public class UtilityServiceImpl implements UtilityService {
 	}
 
 	@Override
-	public HomePageData getHomePageData(Long userGroupId) {
+	public HomePageData getHomePageData() {
 		try {
 
 			HomePageData result = null;
-			List<GallerySlider> galleryData = gallerSilderDao.getAllGallerySliderInfo(userGroupId);
+			List<GallerySlider> galleryData = gallerSilderDao.getAllGallerySliderInfo();
 
 			for (GallerySlider gallery : galleryData) {
 				UserIbp userIbp = userService.getUserIbp(gallery.getAuthorId().toString());
@@ -385,25 +379,9 @@ public class UtilityServiceImpl implements UtilityService {
 			}
 
 			HomePageStats homePageStats;
-			if (userGroupId == null) {
 //				IBP home page DATA
-				homePageStats = portalStatusDao.fetchPortalStats();
-				result = new HomePageData(true, true, true, true, true, homePageStats, galleryData, null);
-			} else {
-//				Group Home Page
-				UserGroup userGroup = ugService.getUserGroup(userGroupId.toString());
-				String desc = null;
-				if (userGroup.getShowDesc())
-					desc = userGroup.getDescription();
-				UserGroupHomePage ugHomePageData = ugService.getUserGroupHomePageData(userGroupId.toString());
-				homePageStats = new HomePageStats(ugHomePageData.getStats().getSpecies(),
-						ugHomePageData.getStats().getObservation(), ugHomePageData.getStats().getMaps(),
-						ugHomePageData.getStats().getDocuments(), ugHomePageData.getStats().getDiscussions(),
-						ugHomePageData.getStats().getActiveUser());
-				result = new HomePageData(ugHomePageData.getShowGallery(), ugHomePageData.getShowStats(),
-						ugHomePageData.getShowRecentObservation(), ugHomePageData.getShowGridMap(),
-						ugHomePageData.getShowPartners(), homePageStats, galleryData, desc);
-			}
+			homePageStats = portalStatusDao.fetchPortalStats();
+			result = new HomePageData(true, true, true, true, true, homePageStats, galleryData, null);
 
 			return result;
 		} catch (Exception e) {
