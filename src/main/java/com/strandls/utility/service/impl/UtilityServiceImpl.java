@@ -217,8 +217,9 @@ public class UtilityServiceImpl implements UtilityService {
 					Tags insertedTag = tagsDao.save(tag);
 					description = description + insertedTag.getName() + ",";
 					if (insertedTag.getId() != null) {
-						TagLinks tagLink = new TagLinks(null, insertedTag.getVersion(), insertedTag.getId(), objectId,
-								objectType);
+						TagLinks tagLink = new TagLinks(null,
+								insertedTag.getVersion() != null ? insertedTag.getVersion() : 0L, insertedTag.getId(),
+								objectId, objectType);
 						result = tagLinkDao.save(tagLink);
 					}
 				} else {
@@ -319,7 +320,8 @@ public class UtilityServiceImpl implements UtilityService {
 				if (tag.getId() != null) {
 					TagLinks result = tagLinkDao.checkIfTagsLinked(objectType, objectId, tag.getId());
 					if (result == null) {
-						TagLinks tagLink = new TagLinks(null, tag.getVersion(), tag.getId(), objectId, objectType);
+						TagLinks tagLink = new TagLinks(null, tag.getVersion() != null ? tag.getVersion() : 0L,
+								tag.getId(), objectId, objectType);
 						tagLinkDao.save(tagLink);
 					}
 				} else {
