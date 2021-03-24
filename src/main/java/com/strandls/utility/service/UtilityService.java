@@ -65,4 +65,6 @@ public interface UtilityService {
 
 	public Boolean insertGallery(GallerySlider gallery);
 
+	public Language getLanguageById(Long languageId);
+
 }

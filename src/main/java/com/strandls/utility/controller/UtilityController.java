@@ -394,4 +394,23 @@ public class UtilityController {
 		}
 	}
 
+	@GET
+	@Path(ApiConstants.LANGUAGES + "/{languageId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Get language by Id", notes = "Returns language", response = Language.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to get the language", response = String.class) })
+
+	public Response fetchLanguageById(@PathParam("languageId") String languageId) {
+		try {
+			Long langId = Long.parseLong(languageId);
+			Language result = utilityService.getLanguageById(langId);
+			return Response.status(Status.OK).entity(result).build();
+
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
 }

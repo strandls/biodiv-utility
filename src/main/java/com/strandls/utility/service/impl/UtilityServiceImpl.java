@@ -453,4 +453,10 @@ public class UtilityServiceImpl implements UtilityService {
 		return false;
 	}
 
+	@Override
+	public Language getLanguageById(Long languageId) {
+		Language result = languageDao.findById(languageId);
+		return result;
+	}
+
 }
