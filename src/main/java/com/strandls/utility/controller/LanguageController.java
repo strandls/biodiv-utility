@@ -30,7 +30,7 @@ public class LanguageController {
 
 	@Inject
 	private LanguageService languageService;
-	
+
 	@GET
 	@Path(ApiConstants.LANGUAGES + "/{code}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -45,6 +45,25 @@ public class LanguageController {
 		try {
 			Language result = languageService.getLanguage(codeType, code);
 			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path(ApiConstants.LANGUAGES + "/{languageId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Get language by Id", notes = "Returns language", response = Language.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Unable to get the language", response = String.class) })
+
+	public Response fetchLanguageById(@PathParam("languageId") String languageId) {
+		try {
+			Long langId = Long.parseLong(languageId);
+			Language result = languageService.getLanguageById(langId);
+			return Response.status(Status.OK).entity(result).build();
+
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
@@ -67,11 +86,11 @@ public class LanguageController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	
+
 	@ApiOperation(value = "Save the Language", notes = "Returns the saved Language ", response = Language.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 404, message = "Unable to return the Langauge", response = String.class) })
@@ -84,11 +103,11 @@ public class LanguageController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	
+
 	@ApiOperation(value = "Save the Language", notes = "Returns the saved Language ", response = Language.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 404, message = "Unable to return the Langauge", response = String.class) })
@@ -101,4 +120,5 @@ public class LanguageController {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
+
 }
