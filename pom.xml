@@ -8,7 +8,7 @@
 	<artifactId>utility-api</artifactId>
 	<version>1.0.0</version>
 	<packaging>war</packaging>
-	<name>biodiv-utility-api</name>
+	<name>biodiv-utility</name>
 	<url>https://github.com/strandls/biodiv-utility</url>
 
 	<properties>
