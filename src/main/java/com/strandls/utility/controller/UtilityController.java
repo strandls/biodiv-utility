@@ -297,6 +297,24 @@ public class UtilityController {
 	}
 
 	@GET
+	@Path(ApiConstants.BULKNAMEPARSER)
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Find the Canonical Form of a Scientific Name", notes = "Returns the Canonical Name of a Scientific Name", response = ParsedName.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Canonical Name not Found", response = String.class) })
+
+	public Response getNamesParsed(@QueryParam("scientificNames") List<String> scientificNames) {
+		List<ParsedName> ans = utilityService.findParsedNames(scientificNames);
+		try {
+
+			return Response.status(Status.OK).entity(ans).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+
+	}
+
+	@GET
 	@Path(ApiConstants.LANGUAGES)
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)

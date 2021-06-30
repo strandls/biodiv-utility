@@ -48,6 +48,8 @@ public interface UtilityService {
 			TagsMappingData tagsMappingData);
 
 	public ParsedName findParsedName(String scientificName);
+	
+	public List<ParsedName>findParsedNames(List<String>scienntificNames);
 
 	public List<Language> findAllLanguages(Boolean isDirty);
 
