@@ -252,7 +252,8 @@ public class UtilityServiceImpl implements UtilityService {
 					}
 
 				}
-				if (result.getId() != null)
+
+				if (result != null && result.getId() != null)
 					resultList.add(result.getId().toString());
 			}
 			if (!(errorList.isEmpty()))
@@ -306,8 +307,11 @@ public class UtilityServiceImpl implements UtilityService {
 		} catch (URISyntaxException e1) {
 			logger.error(e1.getMessage());
 		}
-
-		return parsedName.get(0);
+		if (parsedName != null) {
+			return parsedName.get(0);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -391,7 +395,7 @@ public class UtilityServiceImpl implements UtilityService {
 		}
 		return lang;
 	}
-	
+
 	@Override
 	public Language getLanguageByTwoLetterCode(String language) {
 		Language lang = languageDao.findByPropertyWithCondition("twoLetterCode", language, "=");

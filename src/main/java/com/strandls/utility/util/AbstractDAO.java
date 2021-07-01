@@ -80,17 +80,33 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<T> findAll() {
+		List<T> entities = null;
 		Session session = sessionFactory.openSession();
-		Criteria criteria = session.createCriteria(daoType);
-		List<T> entities = criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		try {
+			Criteria criteria = session.createCriteria(daoType);
+			entities = criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			session.close();
+		}
+
 		return entities;
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<T> findAll(int limit, int offset) {
+		List<T> entities = null;
 		Session session = sessionFactory.openSession();
-		Criteria criteria = session.createCriteria(daoType).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<T> entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
+		try {
+			Criteria criteria = session.createCriteria(daoType).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			session.close();
+		}
+
 		return entities;
 	}
 
@@ -99,7 +115,13 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 	public T findByPropertyWithCondition(String property, String value, String condition) {
 		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
 				+ " :value";
+		return findByPropertyWithCondition(queryStr, value);
+
+	}
+
+	private T findByPropertyWithCondition(String queryStr, String value) {
 		Session session = sessionFactory.openSession();
+
 		Query<T> query = session.createQuery(queryStr);
 		query.setParameter("value", value);
 
@@ -111,7 +133,6 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 		}
 		session.close();
 		return entity;
-
 	}
 
 	@SuppressWarnings("unchecked")

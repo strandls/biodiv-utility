@@ -73,11 +73,11 @@ public class TagsDao extends AbstractDAO<Tags, Long> {
 		List<Tags> tagsList = new ArrayList<Tags>();
 		List<Object[]> result = null;
 
-		String qry = "SELECT id, version, strip_tags(name) FROM public.tags " + "where name like '" + phrase
-				+ "%' order by char_length(name) asc limit 10";
-
+		String qry = "SELECT id, version, strip_tags(name) FROM public.tags " + "where name like ':phrase%' order by char_length(name) asc limit 10";
+	
 		try {
 			Query<Object[]> query = session.createNativeQuery(qry);
+			query.setParameter("phrase",phrase);
 			result = query.getResultList();
 
 			for (Object[] obj : result) {
