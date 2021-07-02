@@ -110,29 +110,8 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 		return entities;
 	}
 
-	// TODO:improve this to do dynamic finder on any property
-	@SuppressWarnings("unchecked")
-	public T findByPropertyWithCondition(String property, String value, String condition) {
-		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
-				+ " :value";
-		return findByPropertyWithCondition(queryStr, value);
+	
 
-	}
-
-	private T findByPropertyWithCondition(String queryStr, String value) {
-		Session session = sessionFactory.openSession();
-
-		Query<T> query = session.createQuery(queryStr);
-		query.setParameter("value", value);
-
-		T entity = null;
-		try {
-			entity = (T) query.getSingleResult();
-		} catch (NoResultException e) {
-			throw e;
-		}
-		session.close();
-		return entity;
-	}
+	
 
 }

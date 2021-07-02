@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import com.strandls.utility.pojo.Language;
 import com.strandls.utility.util.AbstractDAO;
@@ -64,6 +65,48 @@ public class LanguageDao extends AbstractDAO<Language, Long> {
 			session.close();
 		}
 		return resultList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Language getLanguageByProperty(String property, String value, String condition) {
+		/*
+		 * String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t."
+		 * + property + " " + condition + " :value";
+		 */
+		String queryStr = "";
+		if (property.equals("twoLetterCode")) {
+			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.twoLetterCode" + " " + condition
+					+ " :value";
+		}
+		else if (property.equals("name")) {
+			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.name" + " " + condition + " :value";
+		}
+		else if (property.equals("threeLetterCode")) {
+			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.threeLetterCode" + " " + condition
+					+ " :value";
+		}
+		else if (property.equals("id")) {
+			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.id" + " " + condition + " :value";
+		}
+		
+		if("".equals(queryStr)) {
+			throw new IllegalArgumentException("invalid property");
+		}
+
+		Session session = sessionFactory.openSession();
+
+		Query<Language> query = session.createQuery(queryStr);
+		query.setParameter("value", value);
+
+		Language entity = null;
+		try {
+			entity = (Language) query.getSingleResult();
+		} catch (NoResultException e) {
+			throw e;
+		}
+		session.close();
+		return entity;
+
 	}
 
 }
