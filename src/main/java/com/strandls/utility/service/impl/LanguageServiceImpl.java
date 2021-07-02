@@ -47,8 +47,7 @@ public class LanguageServiceImpl implements LanguageService {
 
 	@Override
 	public Language getLanguageById(Long languageId) {
-		Language result = languageDao.findById(languageId);
-		return result;
+		return languageDao.findById(languageId);
 	}
 
 }

@@ -2,19 +2,19 @@ package com.strandls.utility.util;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.NoResultException;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.strandls.utility.service.impl.UtilityServiceImpl;
 
 public abstract class AbstractDAO<T, K extends Serializable> {
-
+	private static final Logger logger = LoggerFactory.getLogger(AbstractDAO.class);
 	protected SessionFactory sessionFactory;
 
 	protected Class<? extends T> daoType;
@@ -86,6 +86,7 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 			Criteria criteria = session.createCriteria(daoType);
 			entities = criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			throw e;
 		} finally {
 			session.close();
@@ -102,6 +103,7 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 			Criteria criteria = session.createCriteria(daoType).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			throw e;
 		} finally {
 			session.close();
@@ -109,9 +111,5 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 
 		return entities;
 	}
-
-	
-
-	
 
 }

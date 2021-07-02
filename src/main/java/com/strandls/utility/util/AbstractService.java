@@ -3,7 +3,13 @@ package com.strandls.utility.util;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.strandls.utility.service.impl.UtilityServiceImpl;
+
 public abstract class AbstractService<T> {
+	private static final Logger logger = LoggerFactory.getLogger(AbstractService.class);
 	public Class<T> entityClass;
 	protected AbstractDAO<T, Long> dao;
 
@@ -19,6 +25,7 @@ public abstract class AbstractService<T> {
 			this.dao.save(entity);
 			return entity;
 		} catch (RuntimeException re) {
+			logger.error(re.getMessage());
 			throw re;
 		}
 	}
@@ -28,6 +35,7 @@ public abstract class AbstractService<T> {
 			this.dao.update(entity);
 			return entity;
 		} catch (RuntimeException re) {
+			logger.error(re.getMessage());
 			throw re;
 		}
 
@@ -39,6 +47,7 @@ public abstract class AbstractService<T> {
 			this.dao.delete(entity);
 			return entity;
 		} catch (RuntimeException re) {
+			logger.error(re.getMessage());
 			throw re;
 		}
 	}
@@ -48,6 +57,7 @@ public abstract class AbstractService<T> {
 			T entity = (T) this.dao.findById(id);
 			return entity;
 		} catch (RuntimeException re) {
+			logger.error(re.getMessage());
 			throw re;
 		}
 	}
@@ -57,6 +67,7 @@ public abstract class AbstractService<T> {
 			List<T> entities = this.dao.findAll(limit, offset);
 			return entities;
 		} catch (RuntimeException re) {
+			logger.error(re.getMessage());
 			throw re;
 		}
 	}
@@ -67,6 +78,7 @@ public abstract class AbstractService<T> {
 			List<T> entities = this.dao.findAll();
 			return entities;
 		} catch (RuntimeException re) {
+			logger.error(re.getMessage());
 			throw re;
 		}
 	}

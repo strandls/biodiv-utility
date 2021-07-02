@@ -47,7 +47,7 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 	@Override
 	protected Injector getInjector() {
 
-		Injector injector = Guice.createInjector(new ServletModule() {
+		return Guice.createInjector(new ServletModule() {
 			@Override
 			protected void configureServlets() {
 
@@ -64,7 +64,7 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 				configuration = configuration.configure();
 				SessionFactory sessionFactory = configuration.buildSessionFactory();
 
-				Map<String, String> props = new HashMap<String, String>();
+				Map<String, String> props = new HashMap<>();
 				props.put("javax.ws.rs.Application", ApplicationConfig.class.getName());
 				props.put("jersey.config.server.provider.packages", "com");
 				props.put("jersey.config.server.wadl.disableWadl", "true");
@@ -81,8 +81,6 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 
 			}
 		}, new UtilityControllerModule(), new UtilityServiceModule(), new UtilityDaoModule());
-
-		return injector;
 
 	}
 
@@ -110,7 +108,7 @@ public class UtilityServeletContextListener extends GuiceServletContextListener 
 			throws URISyntaxException, IOException {
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String> names = new ArrayList<>();
 		URL packageURL = classLoader.getResource(packageName);
 
 		URI uri = new URI(packageURL.toString());

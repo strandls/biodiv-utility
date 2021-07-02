@@ -54,7 +54,7 @@ public class LanguageDao extends AbstractDAO<Language, Long> {
 	public List<Language> findAll(Boolean isDirty) {
 		String qry = "from Language where isDirty = :isDirty";
 		Session session = sessionFactory.openSession();
-		List<Language> resultList = new ArrayList<Language>();
+		List<Language> resultList = new ArrayList<>();
 		try {
 			Query<Language> query = session.createQuery(qry);
 			query.setParameter("isDirty", isDirty);
@@ -66,30 +66,24 @@ public class LanguageDao extends AbstractDAO<Language, Long> {
 		}
 		return resultList;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Language getLanguageByProperty(String property, String value, String condition) {
-		/*
-		 * String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t."
-		 * + property + " " + condition + " :value";
-		 */
+
 		String queryStr = "";
 		if (property.equals("twoLetterCode")) {
 			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.twoLetterCode" + " " + condition
 					+ " :value";
-		}
-		else if (property.equals("name")) {
+		} else if (property.equals("name")) {
 			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.name" + " " + condition + " :value";
-		}
-		else if (property.equals("threeLetterCode")) {
+		} else if (property.equals("threeLetterCode")) {
 			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.threeLetterCode" + " " + condition
 					+ " :value";
-		}
-		else if (property.equals("id")) {
+		} else if (property.equals("id")) {
 			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.id" + " " + condition + " :value";
 		}
-		
-		if("".equals(queryStr)) {
+
+		if ("".equals(queryStr)) {
 			throw new IllegalArgumentException("invalid property");
 		}
 
@@ -102,6 +96,7 @@ public class LanguageDao extends AbstractDAO<Language, Long> {
 		try {
 			entity = (Language) query.getSingleResult();
 		} catch (NoResultException e) {
+			logger.error(e.getMessage());
 			throw e;
 		}
 		session.close();

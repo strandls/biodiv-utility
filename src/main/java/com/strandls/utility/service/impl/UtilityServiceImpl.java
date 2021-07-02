@@ -151,11 +151,11 @@ public class UtilityServiceImpl implements UtilityService {
 			String description = flag.getFlag() + ":" + flag.getNotes();
 
 			if (type.equalsIgnoreCase("species.participation.Observation")) {
-				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+				logActivity.logActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
 						"observaiton", flag.getId(), "Flagged", flagCreateData.getMailData());
 
 			} else if (type.equalsIgnoreCase("content.eml.Document")) {
-				logActivity.LogDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
+				logActivity.logDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
 						objectId, "document", flag.getId(), "Flagged", flagCreateData.getMailData());
 			}
 
@@ -187,11 +187,11 @@ public class UtilityServiceImpl implements UtilityService {
 				String description = flagged.getFlag() + ":" + flagged.getNotes();
 
 				if (type.equalsIgnoreCase("species.participation.Observation")) {
-					logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
+					logActivity.logActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
 							objectId, "observaiton", flagged.getId(), "Flag removed", mailData);
 
 				} else if (type.equalsIgnoreCase("content.eml.Document")) {
-					logActivity.LogDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description,
+					logActivity.logDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description,
 							objectId, objectId, "document", flagged.getId(), "Flag removed", mailData);
 				}
 
@@ -261,10 +261,10 @@ public class UtilityServiceImpl implements UtilityService {
 			description = description.substring(0, description.length() - 1);
 
 			if (objectType.equals("observation"))
-				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+				logActivity.logActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
 						"observation", objectId, "Observation tag updated", tagsMappingData.getMailData());
 			else if (objectType.equals("document"))
-				logActivity.LogDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
+				logActivity.logDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
 						objectId, "document", objectId, "Document tag updated", tagsMappingData.getMailData());
 			return resultList;
 		} catch (Exception e) {
@@ -369,10 +369,10 @@ public class UtilityServiceImpl implements UtilityService {
 			description = description.substring(0, description.length() - 1);
 
 			if (objectType.equals("observation"))
-				logActivity.LogActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
+				logActivity.logActivity(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId, objectId,
 						"observation", objectId, "Observation tag updated", tagsMappingData.getMailData());
 			else if (objectType.equals("document"))
-				logActivity.LogDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
+				logActivity.logDocumentActivities(request.getHeader(HttpHeaders.AUTHORIZATION), description, objectId,
 						objectId, "document", objectId, "Document tag updated", tagsMappingData.getMailData());
 
 		} catch (Exception e) {

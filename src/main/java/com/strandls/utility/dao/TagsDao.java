@@ -70,7 +70,7 @@ public class TagsDao extends AbstractDAO<Tags, Long> {
 	@SuppressWarnings("unchecked")
 	public List<Tags> fetchNameByLike(String phrase) {
 		Session session = sessionFactory.openSession();
-		List<Tags> tagsList = new ArrayList<Tags>();
+		List<Tags> tagsList = new ArrayList<>();
 		List<Object[]> result = null;
 
 		String qry = "SELECT id, version, strip_tags(name) FROM public.tags " + "where name like ':phrase%' order by char_length(name) asc limit 10";
