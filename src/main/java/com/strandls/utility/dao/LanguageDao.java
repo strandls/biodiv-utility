@@ -70,22 +70,9 @@ public class LanguageDao extends AbstractDAO<Language, Long> {
 	@SuppressWarnings("unchecked")
 	public Language getLanguageByProperty(String property, String value, String condition) {
 
-		String queryStr = "";
-		if (property.equals("twoLetterCode")) {
-			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.twoLetterCode" + " " + condition
-					+ " :value";
-		} else if (property.equals("name")) {
-			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.name" + " " + condition + " :value";
-		} else if (property.equals("threeLetterCode")) {
-			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.threeLetterCode" + " " + condition
-					+ " :value";
-		} else if (property.equals("id")) {
-			queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t.id" + " " + condition + " :value";
-		}
-
-		if ("".equals(queryStr)) {
-			throw new IllegalArgumentException("invalid property");
-		}
+		String queryStr = "from Language where property condition :value";
+		queryStr = queryStr.replace("property", property);
+		queryStr = queryStr.replace("condition", condition);
 
 		Session session = sessionFactory.openSession();
 
