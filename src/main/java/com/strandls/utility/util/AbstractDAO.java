@@ -11,8 +11,6 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.strandls.utility.service.impl.UtilityServiceImpl;
-
 public abstract class AbstractDAO<T, K extends Serializable> {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractDAO.class);
 	protected SessionFactory sessionFactory;
